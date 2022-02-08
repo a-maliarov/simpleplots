@@ -20,7 +20,6 @@ def readme(logo_end_line=0):
     return long_description
 
 classifiers = [
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -34,7 +33,7 @@ classifiers = [
 ]
 
 requires = [
-    "pillow ~= 9.0.0",
+    "pillow ~= 9.0.1",
 ]
 
 #--------------------------------------------------------------------------------------------------------------
@@ -44,7 +43,9 @@ setuptools.setup(
     version=about['__version__'],
     description=about['__description__'],
     packages=['simpleplots'],
-    py_modules=['devtools', 'exceptions', 'solver', 'utils'],
+    py_modules=['base', 'figure', 'themes', 'ticker', 'utils', 'visuals'],
+    include_package_data=True,
+    package_data={'': ['*.ttf'], 'simpleplots': ['fonts/*.*']},
     classifiers=classifiers,
     long_description=readme(),
     long_description_content_type="text/markdown",
