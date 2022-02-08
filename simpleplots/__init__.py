@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""Placeholder"""
+"""
+simpleplots
+~~~~~~~~~~~
 
-from .base import Pla
+"""
+
+from .figure import Figure
 
 #-------------------------------------------------------------------------------
