@@ -1,7 +1,7 @@
 __title__ = 'simpleplots'
 __description__ = "simpleplots"
 __url__ = 'https://github.com/a-maliarov/simpleplots'
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 __author__ = 'Anatolii Maliarov'
 __author_email__ = 'tly.mov@gmail.com'
 __license__ = 'MIT'
