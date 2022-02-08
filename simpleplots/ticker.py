@@ -4,6 +4,13 @@
 simpleplots.ticker
 ~~~~~~~~~~~~~~~~~~
 
+This module contains classes for configuring tick locating. `EdgeInteger` and
+`MaxNLocator` located here are just a simplified version of what you can find
+in matplotlib's (https://github.com/matplotlib/matplotlib) `ticker` module.
+
+If you want to understand the logic of calculation it is recommended to check
+matplotlib's original code!
+
 """
 
 from .utils import scale_range
@@ -83,7 +90,7 @@ class MaxNLocator(object):
             step = steps[istep]
 
             if (self._integer and
-                    math.floor(_vmax) - math.ceil(_vmin) >= self._min_n_ticks - 1):
+                math.floor(_vmax) - math.ceil(_vmin) >= self._min_n_ticks - 1):
                 step = max(1, step)
             best_vmin = (_vmin // step) * step
 
@@ -107,6 +114,9 @@ class MaxNLocator(object):
         return [t + offset for t in ticks]
 
     def tick_values(self, vmin, vmax):
+        if vmax < vmin:
+            vmin, vmax = vmax, vmin
+
         locs = self._raw_ticks(vmin, vmax)
         return locs
 
