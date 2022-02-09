@@ -72,7 +72,7 @@ class Figure(object):
             self.img.close()
 
         self.img = Image.new(_mode, (self.width, self.height),
-            color=self.theme.figure_background_color)
+                             color=self.theme.figure_background_color)
         self.draw = ImageDraw.Draw(self.img)
 
     def _draw_spines(self) -> None:
@@ -88,13 +88,11 @@ class Figure(object):
         for axes in self.axes:
             xvalues.extend(axes.xvalues)
         x_major_ticks = self.locator.tick_values(min(xvalues), max(xvalues))
-        # print(x_major_ticks)
 
         yvalues = list()
         for axes in self.axes:
             yvalues.extend(axes.yvalues)
         y_major_ticks = self.locator.tick_values(min(yvalues), max(yvalues))
-        # print(y_major_ticks)
 
         display_xvmin, display_xvmax = min(x_major_ticks), max(x_major_ticks)
         self.grid.xvalues = smartrange(display_xvmin, display_xvmax, xvalues)
@@ -283,8 +281,14 @@ class Figure(object):
             self._draw_lines_between_points(viable_points, axes.color, axes.linewidth)
 
     def show(self) -> None:
-        self.img = self.img.resize((self.width // 2, self.height // 2), resample=Image.ANTIALIAS)
         self.img.show()
+
+    def save(self, path, autoclose=True):
+        self.img = self.img.resize((self.width // 2, self.height // 2), resample=Image.ANTIALIAS)
+        self.img.save(path)
+
+        if autoclose:
+            self.close()
 
     def close(self):
         self.img.close()
