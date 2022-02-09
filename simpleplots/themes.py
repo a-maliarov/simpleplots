@@ -18,9 +18,9 @@ class StandardTheme(Theme):
     spine_color = (0, 0, 0)
     spine_width = 4
 
-    grid_box_width_perc = 0.95
-    grid_box_height_perc = 0.95
-    grid_visibility = False
+    grid_box_width_perc = 0.9
+    grid_box_height_perc = 0.9
+    grid_visibility = True
     grid_line_color = (0, 0, 0)
     grid_line_width = 2
 
