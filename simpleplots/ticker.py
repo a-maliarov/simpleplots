@@ -101,8 +101,8 @@ class MaxNLocator(object):
             ticks = list()
             for t in range(int(low), int(high) + 1):
                 if scale < 1:
-                    tick = Decimal(t) * Decimal(step) + Decimal(best_vmin)
-                    tick = float(tick.normalize())
+                    tick = t * step + best_vmin
+                    tick = float(Decimal(tick).normalize())
                 else:
                     tick = t * step + best_vmin
                 ticks.append(tick)
