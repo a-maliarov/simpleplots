@@ -108,10 +108,13 @@ class Figure(object):
                 continue
 
             grid_vertical_line_coords = Coords(
-                self.spines.horizontal_offset + self.grid.horizontal_offset + self.grid.cell_width * column,
+                self.spines.horizontal_offset + self.grid.horizontal_offset \
+                                              + self.grid.cell_width * column,
                 self.spines.vertical_offset,
-                self.spines.horizontal_offset + self.grid.horizontal_offset + self.grid.cell_width * column,
-                self.spines.vertical_offset + self.grid.vertical_offset * 2 + self.grid.cell_height * (len(self.grid.yvalues) - 1)
+                self.spines.horizontal_offset + self.grid.horizontal_offset \
+                                              + self.grid.cell_width * column,
+                self.spines.vertical_offset + self.grid.vertical_offset * 2 \
+                                            + self.grid.height
             )
 
             self.draw.line(
@@ -126,9 +129,12 @@ class Figure(object):
 
             grid_horizontal_line_coords = Coords(
                 self.spines.horizontal_offset,
-                self.spines.vertical_offset + self.grid.vertical_offset + self.grid.cell_height * row,
-                self.spines.horizontal_offset + self.grid.horizontal_offset * 2 + self.grid.cell_width * (len(self.grid.xvalues) - 1),
-                self.spines.vertical_offset + self.grid.vertical_offset + self.grid.cell_height * row
+                self.spines.vertical_offset + self.grid.vertical_offset \
+                                            + self.grid.cell_height * row,
+                self.spines.horizontal_offset + self.grid.horizontal_offset * 2 \
+                                              + self.grid.width,
+                self.spines.vertical_offset + self.grid.vertical_offset
+                                            + self.grid.cell_height * row \
             )
 
             self.draw.line(
@@ -143,10 +149,14 @@ class Figure(object):
                 continue
 
             grid_vertical_tick_coords = Coords(
-                self.spines.horizontal_offset + self.grid.horizontal_offset + self.grid.cell_width * column,
-                self.spines.vertical_offset + self.grid.vertical_offset * 2 + self.grid.cell_height * (len(self.grid.yvalues) - 1),
-                self.spines.horizontal_offset + self.grid.horizontal_offset + self.grid.cell_width * column,
-                self.spines.vertical_offset + self.grid.vertical_offset * 2 + self.grid.cell_height * (len(self.grid.yvalues) - 1) + self.tick_length
+                self.spines.horizontal_offset + self.grid.horizontal_offset \
+                                              + self.grid.cell_width * column,
+                self.spines.vertical_offset + self.grid.vertical_offset * 2 \
+                                            + self.grid.height,
+                self.spines.horizontal_offset + self.grid.horizontal_offset \
+                                              + self.grid.cell_width * column,
+                self.spines.vertical_offset + self.grid.vertical_offset * 2 \
+                                            + self.grid.height + self.tick_length
             )
 
             self.draw.line(
@@ -161,9 +171,11 @@ class Figure(object):
 
             grid_horizontal_tick_coords = Coords(
                 self.spines.horizontal_offset - self.tick_length,
-                self.spines.vertical_offset + self.grid.vertical_offset + self.grid.cell_height * row,
+                self.spines.vertical_offset + self.grid.vertical_offset \
+                                            + self.grid.cell_height * row,
                 self.spines.horizontal_offset,
-                self.spines.vertical_offset + self.grid.vertical_offset + self.grid.cell_height * row
+                self.spines.vertical_offset + self.grid.vertical_offset \
+                                            + self.grid.cell_height * row
             )
 
             self.draw.line(
@@ -181,8 +193,12 @@ class Figure(object):
             text_width, text_height = get_text_dimensions(text, self.tick_font)
 
             text_coords = (
-                self.spines.horizontal_offset + self.grid.horizontal_offset + self.grid.cell_width * column,
-                self.spines.vertical_offset + self.grid.vertical_offset * 2 + self.grid.cell_height * (len(self.grid.yvalues) - 1) + self.tick_length * 2 + text_height / 2,
+                self.spines.horizontal_offset + self.grid.horizontal_offset \
+                                              + self.grid.cell_width * column,
+                self.spines.vertical_offset + self.grid.vertical_offset * 2 \
+                                            + self.grid.height              \
+                                            + self.tick_length * 2          \
+                                            + text_height / 2,
             )
 
             self.draw.text(
@@ -201,8 +217,10 @@ class Figure(object):
             text_width, text_height = get_text_dimensions(text, self.tick_font)
 
             text_coords = (
-                self.spines.horizontal_offset - self.tick_length * 2 - text_width / 2,
-                self.spines.vertical_offset + self.grid.vertical_offset + self.grid.cell_height * row,
+                self.spines.horizontal_offset - self.tick_length * 2 \
+                                              - text_width / 2,
+                self.spines.vertical_offset + self.grid.vertical_offset \
+                                            + self.grid.cell_height * row,
             )
 
             self.draw.text(
@@ -213,28 +231,29 @@ class Figure(object):
                 anchor="mm"
             )
 
-    def _identify_and_draw_points(self, xvalues: list, yvalues: list, color: str) -> list:
-        viable_points = list()
+    def _find_axes_points(self, xvalues: list, yvalues: list) -> list:
+        points = list()
         for x, y in zip(xvalues, yvalues):
             x_coordinate = [i for i in self.grid.x_connections if i['point_value'] == x][0]['point_coords']
             y_coordinate = [i for i in self.grid.y_connections if i['point_value'] == y][0]['point_coords']
             point_coords = (x_coordinate, y_coordinate)
 
-            viable_points.append(point_coords)
+            points.append(point_coords)
+
+        return points
+
+    def _draw_axes(self, points: list, color: str, linewidth: int) -> None:
+        for point_index, point in enumerate(points):
             self.draw.ellipse(
                 (
-                    point_coords[0] - self.theme.point_radius,
-                    point_coords[1] - self.theme.point_radius,
-                    point_coords[0] + self.theme.point_radius,
-                    point_coords[1] + self.theme.point_radius
+                    point[0] - self.theme.point_radius,
+                    point[1] - self.theme.point_radius,
+                    point[0] + self.theme.point_radius,
+                    point[1] + self.theme.point_radius
                 ),
                 fill=color
             )
 
-        return viable_points
-
-    def _draw_lines_between_points(self, points: list, color: str, linewidth: int) -> None:
-        for point_index, point in enumerate(points):
             if len(points) == point_index + 1:
                 break
 
@@ -257,7 +276,13 @@ class Figure(object):
             self.spines.vertical_offset - self.tick_length * 2 - text_height / 2,
         )
 
-        self.draw.text(text_coords, text, fill=self.theme.title_color, font=title_font, anchor="mm")
+        self.draw.text(
+            text_coords,
+            text=text,
+            fill=self.theme.title_color,
+            font=title_font,
+            anchor="mm"
+        )
 
     def plot(self, xvalues, yvalues, color='red', linewidth=4):
         self._create_empty_image()
@@ -277,14 +302,15 @@ class Figure(object):
         self._draw_tick_labels()
 
         for axes in self.axes:
-            viable_points = self._identify_and_draw_points(axes.xvalues, axes.yvalues, axes.color)
-            self._draw_lines_between_points(viable_points, axes.color, axes.linewidth)
+            points = self._find_axes_points(axes.xvalues, axes.yvalues)
+            self._draw_axes(points, axes.color, axes.linewidth)
 
     def show(self) -> None:
         self.img.show()
 
     def save(self, path, autoclose=True):
-        self.img = self.img.resize((self.width // 2, self.height // 2), resample=Image.ANTIALIAS)
+        origin_size = (self.width // 2, self.height // 2)
+        self.img = self.img.resize(size=origin_size, resample=Image.ANTIALIAS)
         self.img.save(path)
 
         if autoclose:
