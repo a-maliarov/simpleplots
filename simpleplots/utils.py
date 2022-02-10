@@ -4,8 +4,15 @@
 simpleplots.utils
 ~~~~~~~~~~~~~~~~~
 
+This module contains simpleplots' utilities.
+
 """
 
+__all__ = ('get_text_dimensions', 'frange', 'scale_range', 'smartrange')
+
+from .base import Tuple, Iterable, List, Union
+
+from PIL import ImageFont
 from decimal import *
 import math
 import os
@@ -14,8 +21,8 @@ getcontext().prec = 6
 
 #-------------------------------------------------------------------------------
 
-def get_text_dimensions(text_string, font):
-    # https://gist.github.com/Ze1598/420c7eb600899c86d1d65e83c3cc8b25
+def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
+    """Calculates size of a given text string using given font."""
     ascent, descent = font.getmetrics()
 
     text_width = font.getmask(text_string).getbbox()[2]
@@ -25,7 +32,8 @@ def get_text_dimensions(text_string, font):
 
 #-------------------------------------------------------------------------------
 
-def frange(start, stop, step=None):
+def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
+    """Generates a range between float numbers."""
     start, stop = float(start), float(stop)
     if not step:
         start_scale = len(str(start).split('.')[1])
@@ -41,7 +49,7 @@ def frange(start, stop, step=None):
 
 #-------------------------------------------------------------------------------
 
-def scale_range(vmin, vmax, n=1, threshold=100):
+def scale_range(vmin: float, vmax: float, n: int = 1, threshold: int = 100):
     dv = abs(vmax - vmin)
     meanv = (vmax + vmin) / 2
     if abs(meanv) / dv < threshold:
@@ -54,7 +62,10 @@ def scale_range(vmin, vmax, n=1, threshold=100):
 
 #-------------------------------------------------------------------------------
 
-def smartrange(vmin, vmax, origin_values):
+def smartrange(vmin: Union[int, float], vmax: Union[int, float],
+               origin_values: List[Union[int, float]]) -> List[Union[int, float]]:
+    """Fills gaps between vmin and vmax based on input type."""
+
     if isinstance(vmin, float) and isinstance(vmax, float):
 
         all_integers = all([isinstance(n, int) or n.is_integer() for n in origin_values])
@@ -71,7 +82,8 @@ def smartrange(vmin, vmax, origin_values):
             start_scale = len(str(start).split('.')[1])
             stop_scale = len(str(stop).split('.')[1])
 
-            origin_floats = [len(str(n).split('.')[1]) for n in origin_values if len(str(n).split('.')) == 2]
+            origin_floats = [len(str(n).split('.')[1]) for n in origin_values
+                             if len(str(n).split('.')) == 2]
             origin_scale = max(origin_floats) if origin_floats else 0
 
             scale = max(start_scale, stop_scale, origin_scale)

@@ -13,12 +13,12 @@ matplotlib's original code!
 
 """
 
+__all__ = ('MaxNLocator')
+
 from .utils import scale_range
 
 from decimal import *
 import math
-
-#-------------------------------------------------------------------------------
 
 getcontext().prec = 6
 

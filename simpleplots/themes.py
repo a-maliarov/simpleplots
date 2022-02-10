@@ -4,7 +4,11 @@
 simpleplots.themes
 ~~~~~~~~~~~~~~~~~~
 
+This module contains simpleplots' figure themes.
+
 """
+
+__all__ = ('StandardTheme')
 
 from .base import Theme
 
@@ -37,3 +41,5 @@ class StandardTheme(Theme):
     title_font = 'arial.ttf'
     title_size_perc = 0.033
     title_color = (0, 0, 0)
+
+#-------------------------------------------------------------------------------

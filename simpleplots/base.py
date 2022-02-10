@@ -2,13 +2,17 @@
 
 """
 simpleplots.base
-----------------
+~~~~~~~~~~~~~~~~
+
+This module contains all the dataclasses.
 
 """
 
+__all__ = ('Theme', 'Axes', 'Tuple', 'List', 'Iterable', 'Union')
+
 from dataclasses import dataclass
 from collections import namedtuple
-from typing import Tuple
+from typing import Tuple, List, Iterable, Union
 
 #-------------------------------------------------------------------------------
 
@@ -47,13 +51,11 @@ class Theme:
 
 #-------------------------------------------------------------------------------
 
-class Axes(object):
-
-    def __init__(self, xvalues, yvalues, color='red', linewidth=4):
-        self.xvalues = xvalues
-        self.yvalues = yvalues
-
-        self.color = color
-        self.linewidth = linewidth
+@dataclass
+class Axes():
+    xvalues: List[Union[int, float]]
+    yvalues: List[Union[int, float]]
+    color: str = 'red'
+    linewidth: int = 4
 
 #-------------------------------------------------------------------------------

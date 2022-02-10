@@ -8,6 +8,8 @@ This module contains Figure instance.
 
 """
 
+__all__ = ('Figure')
+
 from .base import Tuple, Theme, Axes, Coords
 from .utils import get_text_dimensions, smartrange
 from .visuals import Spines, PointsGrid
@@ -68,6 +70,7 @@ class Figure(object):
         )
 
     def _create_empty_image(self, _mode: str = 'RGB') -> None:
+        """Creates an empty image and initializes ImageDraw."""
         if self.img:
             self.img.close()
 
@@ -76,6 +79,7 @@ class Figure(object):
         self.draw = ImageDraw.Draw(self.img)
 
     def _draw_spines(self) -> None:
+        """Draws graph spines."""
         for spine in self.spines.all:
             self.draw.line(
                 spine,
@@ -84,6 +88,28 @@ class Figure(object):
             )
 
     def _set_grid_values(self) -> None:
+        """
+        Fills gaps in input values range, finds major ticks and saves all the
+        information to PointsGrid.
+
+        Say, the input values are [1, 3, 4], but drawing only these 3 values in
+        a row would ruin the scale because by doing so, we unintentionally show
+        that the distance between 1 and 3 is the same as the distance between
+        3 and 4, which is, of course, false.
+
+        To avoid this, we firstly fill the gaps by converting the [1, 3, 4] to
+        [1, 2, 3, 4]. Now, the grid contains all the values to correctly
+        visualize the scale.
+
+        At the same time, if the values are, for example, [1, 4, 46, 98] - the
+        list with filled gaps would contain almost 100 elements and labeling
+        all of them would be a mess. That's why we find "major ticks", in this
+        case: [0, 10, 20, 30, ..., 100]. These are the only values that will be
+        labeled along spines, although we still keep track of all 100 to display
+        the actual plot.
+
+        """
+
         xvalues = list()
         for axes in self.axes:
             xvalues.extend(axes.xvalues)
@@ -103,6 +129,7 @@ class Figure(object):
         self.grid.y_major_ticks = y_major_ticks
 
     def _draw_grid(self) -> None:
+        """Draws grid lines within spines box."""
         for column, x_value in enumerate(self.grid.xvalues):
             if not x_value in self.grid.x_major_ticks:
                 continue
@@ -144,6 +171,7 @@ class Figure(object):
             )
 
     def _draw_ticks(self) -> None:
+        """Draws ticks along spines box."""
         for column, x_value in enumerate(self.grid.xvalues):
             if not x_value in self.grid.x_major_ticks:
                 continue
@@ -185,6 +213,7 @@ class Figure(object):
             )
 
     def _draw_tick_labels(self) -> None:
+        """Draws major ticks labels."""
         for column, x_value in enumerate(self.grid.xvalues):
             if not x_value in self.grid.x_major_ticks:
                 continue
@@ -231,7 +260,13 @@ class Figure(object):
                 anchor="mm"
             )
 
-    def _find_axes_points(self, xvalues: list, yvalues: list) -> list:
+    def _find_axes_points(self, xvalues: List[Union[int, float]],
+                          yvalues: List[Union[int, float]]) -> List[Tuple[int, int]]:
+        """
+        Create a list of axes points coordinates.
+
+        """
+
         points = list()
         for x, y in zip(xvalues, yvalues):
             x_coordinate = self.grid.x_connections[x]
@@ -242,7 +277,13 @@ class Figure(object):
 
         return points
 
-    def _draw_axes(self, points: list, color: str, linewidth: int) -> None:
+    def _draw_axes(self, points: List[Tuple[int, int]], color: str,
+                   linewidth: int) -> None:
+        """
+        Using axes points coordinates draws points and lines on the image.
+
+        """
+
         for point_index, point in enumerate(points):
             self.draw.ellipse(
                 (
@@ -263,7 +304,13 @@ class Figure(object):
             connection_line_coords = (*first_point_coords, *second_point_coords)
             self.draw.line(connection_line_coords, fill=color, width=linewidth)
 
-    def title(self, text):
+    def title(self, text: str) -> None:
+        """
+        Sets graph's title using given text string. The location of the title
+        is located on top of spines box, in the middle of the image.
+
+        """
+
         title_font = ImageFont.truetype(
             os.path.join(self.fonts_folder, self.theme.title_font),
             int(self.width * self.theme.title_size_perc)
@@ -284,7 +331,15 @@ class Figure(object):
             anchor="mm"
         )
 
-    def plot(self, xvalues, yvalues, color='red', linewidth=4):
+    def plot(self, xvalues: List[Union[int, float]], yvalues: List[Union[int, float]],
+             color: str = 'red', linewidth: int = 4) -> None:
+        """
+        Plot y versus x as lines and/or markers on the image. Can be called
+        multiple times from the same figure to include several properly scaled
+        plots within one figure.
+
+        """
+
         self._create_empty_image()
         self._draw_spines()
 
@@ -306,9 +361,18 @@ class Figure(object):
             self._draw_axes(points, axes.color, axes.linewidth)
 
     def show(self) -> None:
+        """
+        Displays the image. This method is mainly intended for debugging
+        purposes. On Unix platforms, this method saves the image to a temporary
+        PPM file, and calls the xv utility. On Windows, it saves the image to a
+        temporary BMP file, and uses the standard BMP display utility to show it
+        (usually Paint).
+        """
+
         self.img.show()
 
-    def save(self, path, autoclose=True):
+    def save(self, path: str, autoclose: bool = True):
+        """Saves the figure as an image by the given path."""
         origin_size = (self.width // 2, self.height // 2)
         self.img = self.img.resize(size=origin_size, resample=Image.ANTIALIAS)
         self.img.save(path)
@@ -316,7 +380,8 @@ class Figure(object):
         if autoclose:
             self.close()
 
-    def close(self):
+    def close(self) -> None:
+        """Explicitly closes the image."""
         self.img.close()
 
 #-------------------------------------------------------------------------------
