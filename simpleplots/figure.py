@@ -10,7 +10,7 @@ This module contains Figure instance.
 
 __all__ = ('Figure')
 
-from .base import Tuple, Theme, Axes, Coords
+from .base import Tuple, Theme, Axes, Coords, List, Union, Tuple
 from .utils import get_text_dimensions, smartrange
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
