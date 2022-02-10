@@ -81,32 +81,24 @@ class PointsGrid(object):
         self.cell_width = None
         self.cell_height = None
 
-        self.x_connections = list()
-        self.y_connections = list()
+        self.x_connections = dict()
+        self.y_connections = dict()
 
     def configure_size(self):
         self.cell_width = self.width / (len(self.xvalues) - 1)
         self.cell_height = self.height / (len(self.yvalues) - 1)
 
     def map_values_with_coords(self):
-        self.x_connections = list()
+        self.x_connections = dict()
         for x_index, x_value in enumerate(self.xvalues):
-            x_coordinate = self.spines.horizontal_offset + self.horizontal_offset + (self.cell_width * x_index + 1)
+            x_coordinate = self.spines.horizontal_offset + self.horizontal_offset \
+                         + (self.cell_width * x_index + 1)
+            self.x_connections[x_value] = x_coordinate
 
-            point_data = {
-                'point_value': x_value,
-                'point_coords': x_coordinate
-            }
-            self.x_connections.append(point_data)
-
-        self.y_connections = list()
+        self.y_connections = dict()
         for y_index, y_value in enumerate(self.yvalues):
-            y_coordinate = self.spines.vertical_offset + self.vertical_offset + (self.cell_height * (len(self.yvalues) - y_index - 1))
-
-            point_data = {
-                'point_value': y_value,
-                'point_coords': y_coordinate
-            }
-            self.y_connections.append(point_data)
+            y_coordinate = self.spines.vertical_offset + self.vertical_offset \
+                         + self.cell_height * (len(self.yvalues) - y_index - 1)
+            self.y_connections[y_value] = y_coordinate
 
 #-------------------------------------------------------------------------------

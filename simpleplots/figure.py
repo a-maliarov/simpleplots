@@ -234,8 +234,8 @@ class Figure(object):
     def _find_axes_points(self, xvalues: list, yvalues: list) -> list:
         points = list()
         for x, y in zip(xvalues, yvalues):
-            x_coordinate = [i for i in self.grid.x_connections if i['point_value'] == x][0]['point_coords']
-            y_coordinate = [i for i in self.grid.y_connections if i['point_value'] == y][0]['point_coords']
+            x_coordinate = self.grid.x_connections[x]
+            y_coordinate = self.grid.y_connections[y]
             point_coords = (x_coordinate, y_coordinate)
 
             points.append(point_coords)
