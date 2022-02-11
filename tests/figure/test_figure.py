@@ -70,4 +70,37 @@ class TestFigure(unittest.TestCase):
             expected = {0.0: 141.0, 0.1: 161.0, 0.2: 181.0, 0.3: 201.0, 0.4: 221.0, 0.5: 241.0, 0.6: 261.0, 0.7: 281.0, 0.8: 301.0, 0.9: 321.0, 1.0: 341.0, 1.1: 361.0, 1.2: 381.0, 1.3: 401.0, 1.4: 421.0, 1.5: 441.0, 1.6: 461.0, 1.7: 481.0, 1.8: 501.0, 1.9: 521.0, 2.0: 541.0, 2.1: 561.0, 2.2: 581.0, 2.3: 601.0, 2.4: 621.0, 2.5: 641.0, 2.6: 661.0, 2.7: 681.0, 2.8: 701.0, 2.9: 721.0, 3.0: 741.0, 3.1: 761.0, 3.2: 781.0, 3.3: 801.0, 3.4: 821.0, 3.5: 841.0, 3.6: 861.0}
             self.assertDictEqual(expected, x_to_test)
 
+    def test_multiple_plots(self):
+        fig = Figure(size=(500, 300))
+        fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
+        fig.plot([4, 5, 6], [4, 5, 6], color='blue', linewidth=7)
+        y_to_test = fig.grid.y_connections
+        x_to_test = fig.grid.x_connections
+        fig.close()
+
+        with self.subTest():
+            expected = {1: 516.0, 2: 429.6, 3: 343.20000000000005, 4: 256.8, 5: 170.4, 6: 84.0}
+            self.assertDictEqual(expected, y_to_test)
+
+        with self.subTest():
+            expected = {1: 141.0, 2: 285.0, 3: 429.0, 4: 573.0, 5: 717.0, 6: 861.0}
+            self.assertDictEqual(expected, x_to_test)
+
+    def test_save(self):
+        fig = Figure(size=(500, 300))
+        fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
+        fig.title('Test')
+        fig.save(os.path.join(here, 'graph.png'))
+
+        self.assertTrue('graph.png' in os.listdir(here))
+
+    def test_show(self):
+        # Not a real test yet
+        fig = Figure(size=(500, 300))
+        fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
+        fig.show()
+        fig.close()
+
+        self.assertTrue(True)
+
 #--------------------------------------------------------------------------------------------------------------
