@@ -32,6 +32,19 @@ def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
 
 #-------------------------------------------------------------------------------
 
+def scale_range(vmin: float, vmax: float, n: int = 1, threshold: int = 100):
+    dv = abs(vmax - vmin)
+    meanv = (vmax + vmin) / 2
+    if abs(meanv) / dv < threshold:
+        offset = 0
+    else:
+        offset = math.copysign(10 ** (math.log10(abs(meanv)) // 1), meanv)
+    scale = 10 ** (math.log10(dv / n) // 1)
+
+    return scale, offset
+
+#-------------------------------------------------------------------------------
+
 def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
     """Generates a range between float numbers."""
     start, stop = float(start), float(stop)
@@ -46,19 +59,6 @@ def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
     while start <= stop:
         yield float(start)
         start += Decimal(step).normalize()
-
-#-------------------------------------------------------------------------------
-
-def scale_range(vmin: float, vmax: float, n: int = 1, threshold: int = 100):
-    dv = abs(vmax - vmin)
-    meanv = (vmax + vmin) / 2
-    if abs(meanv) / dv < threshold:
-        offset = 0
-    else:
-        offset = math.copysign(10 ** (math.log10(abs(meanv)) // 1), meanv)
-    scale = 10 ** (math.log10(dv / n) // 1)
-
-    return scale, offset
 
 #-------------------------------------------------------------------------------
 
