@@ -67,10 +67,11 @@ def smartrange(vmin: Union[int, float], vmax: Union[int, float],
                origin_values: List[Union[int, float]]) -> List[Union[int, float]]:
     """Fills gaps between vmin and vmax based on input type."""
 
-    if isinstance(vmin, float) and isinstance(vmax, float):
+    if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):
 
-        all_integers = all([isinstance(n, int) or n.is_integer() for n in origin_values])
-        if vmin.is_integer() and vmax.is_integer() and all_integers:
+        check_if_integer = lambda n: isinstance(n, int) or n.is_integer()
+        all_integers = all([check_if_integer(n) for n in origin_values])
+        if check_if_integer(vmin) and check_if_integer(vmax) and all_integers:
             n_range = list(range(int(vmin), int(vmax) + 1))
             #-------------------------------------------------------------------
             if max([abs(n) for n in n_range]) <= 10 and len(n_range) <= 5:
