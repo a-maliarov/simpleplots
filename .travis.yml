@@ -24,7 +24,7 @@ before_script:
   - pip install codecov
 
 script:
-  - coverage run tests/test_main.py
+  - coverage run -m unittest discover tests
 
 after_success:
   - codecov
