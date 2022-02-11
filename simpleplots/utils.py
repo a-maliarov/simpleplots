@@ -33,6 +33,7 @@ def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
 #-------------------------------------------------------------------------------
 
 def scale_range(vmin: float, vmax: float, n: int = 1, threshold: int = 100):
+    """Identifies the maximum scale of the given range."""
     dv = abs(vmax - vmin)
     meanv = (vmax + vmin) / 2
     if abs(meanv) / dv < threshold:
