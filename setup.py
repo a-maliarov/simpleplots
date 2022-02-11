@@ -25,7 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 2 - Pre-Alpha",
     "Natural Language :: English",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
