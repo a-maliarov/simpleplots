@@ -41,7 +41,7 @@ def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
         scale = max(start_scale, stop_scale)
         step = 1 * (10 ** -scale)
 
-    start, stop = Decimal(start), Decimal(stop)
+    start, stop = Decimal(start).normalize(), Decimal(stop).normalize()
 
     while start <= stop:
         yield float(start)
