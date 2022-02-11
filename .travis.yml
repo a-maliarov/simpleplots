@@ -1,0 +1,30 @@
+language: python
+os: linux
+
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  - "3.10-dev"
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - python: "3.5"
+    - python: "3.6"
+
+install:
+  - pip install git+https://github.com/a-maliarov/simpleplots
+
+before_script:
+  - pip install pillow
+  - pip install coverage
+  - pip install codecov
+
+script:
+  - coverage run tests/test_main.py
+
+after_success:
+  - codecov
