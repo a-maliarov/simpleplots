@@ -1,4 +1,4 @@
-![simpleplots](ext/logo.png)
+![simpleplots](https://raw.githubusercontent.com/a-maliarov/simpleplots/main/ext/logo.png)
 This library is created with the following idea in mind: "**If, for some reason, I need to create a lot of simple linear graphs and save their images, I don't want to worry about memory leaks. It must be easy to plot a simple 2D graph and save the figure, even if it's 100 of them!**"
 
 ---
