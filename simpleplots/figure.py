@@ -59,7 +59,8 @@ class Figure(object):
 
         self.spines = Spines(self.width, self.height, self.theme)
         self.grid = PointsGrid(self.spines, self.theme)
-        self.locator = MaxNLocator()
+        self.x_locator = MaxNLocator()
+        self.y_locator = MaxNLocator()
 
         self.axes = list()
 
@@ -113,12 +114,12 @@ class Figure(object):
         xvalues = list()
         for axes in self.axes:
             xvalues.extend(axes.xvalues)
-        x_major_ticks = self.locator.tick_values(min(xvalues), max(xvalues))
+        x_major_ticks = self.x_locator.tick_values(min(xvalues), max(xvalues))
 
         yvalues = list()
         for axes in self.axes:
             yvalues.extend(axes.yvalues)
-        y_major_ticks = self.locator.tick_values(min(yvalues), max(yvalues))
+        y_major_ticks = self.y_locator.tick_values(min(yvalues), max(yvalues))
 
         display_xvmin, display_xvmax = min(x_major_ticks), max(x_major_ticks)
         self.grid.xvalues = smartrange(display_xvmin, display_xvmax, xvalues)
