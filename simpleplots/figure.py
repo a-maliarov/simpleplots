@@ -320,7 +320,8 @@ class Figure(object):
         text_width, text_height = get_text_dimensions(text, title_font)
 
         text_coords = (
-            self.width / 2,
+            self.spines.horizontal_offset + self.grid.horizontal_offset \
+                                          + self.grid.width / 2,
             self.spines.vertical_offset - self.tick_length * 2 - text_height / 2,
         )
 
