@@ -307,8 +307,8 @@ class Figure(object):
 
     def title(self, text: str) -> None:
         """
-        Sets graph's title using given text string. The location of the title
-        is located on top of spines box, in the middle of the image.
+        Sets graph's title using given text string. The position of the title
+        is located on top of spines box, in the middle of the grid.
 
         """
 
