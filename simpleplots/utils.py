@@ -23,6 +23,11 @@ getcontext().prec = 6
 
 #-------------------------------------------------------------------------------
 
+INT_DTYPES: List[str] = ['int8', 'int16', 'int32', 'int64']
+FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128']
+
+#-------------------------------------------------------------------------------
+
 def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
     """Calculates size of a given text string using given font."""
     ascent, descent = font.getmetrics()
@@ -52,10 +57,10 @@ def isint(n: Union[int, float]) -> bool:
 def normalize_values(values: List[Union[int, float]]) -> np.ndarray:
     values = np.asarray(values)
 
-    if values.dtype in ['int8', 'int16', 'int32', 'int64']:
+    if values.dtype in INT_DTYPES:
         return values
 
-    elif values.dtype in ['float16', 'float32', 'float64', 'float96', 'float128']:
+    elif values.dtype in FLOAT_DTYPES:
         values = np.around(values, decimals=4)
         return values
 
@@ -101,7 +106,7 @@ def smartrange(vmin: Union[int, float], vmax: Union[int, float],
 
     if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):
 
-        if isint(vmin) and isint(vmax) and origin_values.dtype == 'int32':
+        if (isint(vmin) and isint(vmax) and origin_values.dtype in INT_DTYPES):
             n_range = np.arange(int(vmin), int(vmax) + 1, 1)
             #-------------------------------------------------------------------
             if max([abs(n) for n in n_range]) <= 10 and len(n_range) <= 5:
