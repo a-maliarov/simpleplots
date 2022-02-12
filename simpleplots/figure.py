@@ -11,7 +11,7 @@ This module contains Figure instance.
 __all__ = ('Figure')
 
 from .base import Tuple, Theme, Axes, Coords, List, Union, Tuple
-from .utils import get_text_dimensions, smartrange
+from .utils import get_text_dimensions, smartrange, normalize_values
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
 from .ticker import MaxNLocator
@@ -344,6 +344,8 @@ class Figure(object):
         self._create_empty_image()
         self._draw_spines()
 
+        xvalues = normalize_values(xvalues)
+        yvalues = normalize_values(yvalues)
         axes = Axes(xvalues, yvalues, color, linewidth)
         self.axes.append(axes)
 

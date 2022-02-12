@@ -8,7 +8,8 @@ This module contains simpleplots' utilities.
 
 """
 
-__all__ = ('get_text_dimensions', 'frange', 'scale_range', 'smartrange')
+__all__ = ('get_text_dimensions', 'frange', 'scale_range', 'smartrange',
+           'normalize_values', 'normalize_float', 'check_if_integer')
 
 from .base import Tuple, Iterable, List, Union
 
@@ -29,6 +30,31 @@ def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
     text_height = font.getmask(text_string).getbbox()[3] + descent
 
     return (text_width, text_height)
+
+#-------------------------------------------------------------------------------
+
+def normalize_float(n: float, r: int = 4) -> float:
+    n = float(Decimal(n).normalize())
+    n = round(n, r)
+    return n
+
+#-------------------------------------------------------------------------------
+
+def check_if_integer(n: Union[int, float]) -> bool:
+    return isinstance(n, int) or n.is_integer()
+
+#-------------------------------------------------------------------------------
+
+def normalize_values(values: List[Union[int, float]]):
+    all_integers = all([check_if_integer(n) for n in values])
+    all_numbers = all([isinstance(n, (float, int)) for n in values])
+
+    if all_integers:
+        return values
+
+    elif all_numbers:
+        values = [normalize_float(i) for i in values]
+        return values
 
 #-------------------------------------------------------------------------------
 
@@ -69,7 +95,6 @@ def smartrange(vmin: Union[int, float], vmax: Union[int, float],
 
     if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):
 
-        check_if_integer = lambda n: isinstance(n, int) or n.is_integer()
         all_integers = all([check_if_integer(n) for n in origin_values])
         if check_if_integer(vmin) and check_if_integer(vmax) and all_integers:
             n_range = list(range(int(vmin), int(vmax) + 1))
