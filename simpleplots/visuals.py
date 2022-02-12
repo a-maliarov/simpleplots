@@ -94,17 +94,17 @@ class PointsGrid(object):
         self.horizontal_offset = (self.spines.width - self.width) / 2
         self.vertical_offset = (self.spines.height - self.height) / 2
 
-        self.xvalues = list()
-        self.yvalues = list()
+        self.xvalues = None
+        self.yvalues = None
 
-        self.x_major_ticks = list()
-        self.x_major_ticks = list()
+        self.x_major_ticks = None
+        self.x_major_ticks = None
 
         self.cell_width = None
         self.cell_height = None
 
-        self.x_connections = dict()
-        self.y_connections = dict()
+        self.x_connections = None
+        self.y_connections = None
 
     def configure_size(self) -> None:
         """

@@ -8,13 +8,14 @@ This module contains simpleplots' utilities.
 
 """
 
-__all__ = ('get_text_dimensions', 'frange', 'scale_range', 'smartrange',
-           'normalize_values', 'normalize_float', 'check_if_integer')
+__all__ = ('get_text_dimensions', 'normalize_float', 'decimals', 'isint',
+           'normalize_values', 'scale_range', 'frange', 'smartrange')
 
-from .base import Tuple, Iterable, List, Union
+from .base import Tuple, List, Union, Iterable
 
 from PIL import ImageFont
 from decimal import *
+import numpy as np
 import math
 import os
 
@@ -40,21 +41,26 @@ def normalize_float(n: float, r: int = 4) -> float:
 
 #-------------------------------------------------------------------------------
 
-def check_if_integer(n: Union[int, float]) -> bool:
+def decimals(n: float) -> int:
+    return len(str(n).split('.')[1]) if len(str(n).split('.')) == 2 else 0
+
+def isint(n: Union[int, float]) -> bool:
     return isinstance(n, int) or n.is_integer()
 
 #-------------------------------------------------------------------------------
 
-def normalize_values(values: List[Union[int, float]]):
-    all_integers = all([check_if_integer(n) for n in values])
-    all_numbers = all([isinstance(n, (float, int)) for n in values])
+def normalize_values(values: List[Union[int, float]]) -> np.ndarray:
+    values = np.asarray(values)
 
-    if all_integers:
+    if values.dtype in ['int8', 'int16', 'int32', 'int64']:
         return values
 
-    elif all_numbers:
-        values = [normalize_float(i) for i in values]
+    elif values.dtype in ['float16', 'float32', 'float64', 'float96', 'float128']:
+        values = np.around(values, decimals=4)
         return values
+
+    else:
+        raise TypeError('unknown input datatype')
 
 #-------------------------------------------------------------------------------
 
@@ -90,31 +96,27 @@ def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
 #-------------------------------------------------------------------------------
 
 def smartrange(vmin: Union[int, float], vmax: Union[int, float],
-               origin_values: List[Union[int, float]]) -> List[Union[int, float]]:
+               origin_values: np.ndarray) -> np.ndarray:
     """Fills gaps between vmin and vmax based on input type."""
 
     if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):
 
-        all_integers = all([check_if_integer(n) for n in origin_values])
-        if check_if_integer(vmin) and check_if_integer(vmax) and all_integers:
-            n_range = list(range(int(vmin), int(vmax) + 1))
+        if isint(vmin) and isint(vmax) and origin_values.dtype == 'int32':
+            n_range = np.arange(int(vmin), int(vmax) + 1, 1)
             #-------------------------------------------------------------------
             if max([abs(n) for n in n_range]) <= 10 and len(n_range) <= 5:
-                return [n for n in frange(vmin, vmax, 0.1)]
+                return np.asarray([i for i in frange(vmin, vmax, 0.1)])
             #-------------------------------------------------------------------
             return n_range
 
         else:
-            start, stop = float(vmin), float(vmax)
-            start_scale = len(str(start).split('.')[1])
-            stop_scale = len(str(stop).split('.')[1])
-
-            origin_floats = [len(str(n).split('.')[1]) for n in origin_values
-                             if len(str(n).split('.')) == 2]
-            origin_scale = max(origin_floats) if origin_floats else 0
+            start, stop = normalize_float(vmin), normalize_float(vmax)
+            start_scale, stop_scale = decimals(start), decimals(stop)
+            origin_scale = max([decimals(n) for n in origin_values])
 
             scale = max(start_scale, stop_scale, origin_scale)
             step = 1 * (10 ** -scale)
-            return [n for n in frange(vmin, vmax, step)]
+
+            return np.asarray([i for i in frange(vmin, vmax, step)])
 
 #-------------------------------------------------------------------------------

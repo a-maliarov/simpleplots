@@ -10,9 +10,10 @@ This module contains all the dataclasses.
 
 __all__ = ('Theme', 'Axes', 'Tuple', 'List', 'Iterable', 'Union')
 
+from typing import Tuple, List, Iterable, Union
 from dataclasses import dataclass
 from collections import namedtuple
-from typing import Tuple, List, Iterable, Union
+import numpy as np
 
 #-------------------------------------------------------------------------------
 
@@ -53,8 +54,8 @@ class Theme:
 
 @dataclass
 class Axes():
-    xvalues: List[Union[int, float]]
-    yvalues: List[Union[int, float]]
+    xvalues: np.ndarray
+    yvalues: np.ndarray
     color: str = 'red'
     linewidth: int = 4
 

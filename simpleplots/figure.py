@@ -17,6 +17,8 @@ from .themes import StandardTheme
 from .ticker import MaxNLocator
 
 from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+import gc
 import os
 
 #-------------------------------------------------------------------------------
@@ -111,22 +113,16 @@ class Figure(object):
 
         """
 
-        xvalues = list()
-        for axes in self.axes:
-            xvalues.extend(axes.xvalues)
-        x_major_ticks = self.x_locator.tick_values(min(xvalues), max(xvalues))
-
-        yvalues = list()
-        for axes in self.axes:
-            yvalues.extend(axes.yvalues)
-        y_major_ticks = self.y_locator.tick_values(min(yvalues), max(yvalues))
-
-        display_xvmin, display_xvmax = min(x_major_ticks), max(x_major_ticks)
-        self.grid.xvalues = smartrange(display_xvmin, display_xvmax, xvalues)
+        xvalues = np.concatenate([axes.xvalues for axes in self.axes])
+        x_major_ticks = self.x_locator.tick_values(np.min(xvalues), np.max(xvalues))
+        xvmin, xvmax = np.min(x_major_ticks), np.max(x_major_ticks)
+        self.grid.xvalues = smartrange(xvmin, xvmax, xvalues)
         self.grid.x_major_ticks = x_major_ticks
 
-        display_yvmin, display_yvmax = min(y_major_ticks), max(y_major_ticks)
-        self.grid.yvalues = smartrange(display_yvmin, display_yvmax, yvalues)
+        yvalues = np.concatenate([axes.yvalues for axes in self.axes])
+        y_major_ticks = self.y_locator.tick_values(np.min(yvalues), np.max(yvalues))
+        yvmin, yvmax = np.min(y_major_ticks), np.max(y_major_ticks)
+        self.grid.yvalues = smartrange(yvmin, yvmax, yvalues)
         self.grid.y_major_ticks = y_major_ticks
 
     def _draw_grid(self) -> None:
@@ -387,5 +383,6 @@ class Figure(object):
     def close(self) -> None:
         """Explicitly closes the image."""
         self.img.close()
+        gc.collect()
 
 #-------------------------------------------------------------------------------
