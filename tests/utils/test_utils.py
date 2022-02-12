@@ -57,6 +57,7 @@ class TestUtils(unittest.TestCase):
 
     def test_smartrange_integers_with_gaps(self):
         ov = np.asarray(list(range(1, 21)))
+        print(ov)
         to_test = smartrange(1, 20, ov).tolist()
         expected = np.asarray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).tolist()
         self.assertListEqual(to_test, expected)
