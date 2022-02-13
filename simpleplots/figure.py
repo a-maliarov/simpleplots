@@ -10,13 +10,14 @@ This module contains Figure instance.
 
 __all__ = ('Figure')
 
-from .base import Tuple, Theme, Axes, Coords, List, Union, Tuple
-from .utils import get_text_dimensions, smartrange, normalize_values, get_font
+from .base import Theme, Axes, Coords
+from .utils import smartrange, normalize_values, get_font
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
 from .ticker import MaxNLocator
 
-from PIL import Image, ImageDraw, ImageFont
+from typing import Tuple, List, Union
+from PIL import Image, ImageDraw
 import numpy as np
 import gc
 
@@ -238,22 +239,10 @@ class Figure(object):
         """
 
         title_font = get_font('title', self.theme, self.width)
-        text_width, text_height = get_text_dimensions(text, title_font)
+        coords = self.grid.get_title_coords(text, title_font)
 
-        text_coords = (
-            self.spines.horizontal_offset + self.grid.horizontal_offset \
-                                          + self.grid.width / 2,
-            self.spines.vertical_offset - self.grid.tick_length * 2     \
-                                        - text_height / 2,
-        )
-
-        self.draw.text(
-            text_coords,
-            text=text,
-            fill=self.theme.title_color,
-            font=title_font,
-            anchor="mm"
-        )
+        self.draw.text(xy=coords, text=text, font=title_font, anchor="mm",
+                       fill=self.theme.title_color)
 
     def plot(self, xvalues: List[Union[int, float]], yvalues: List[Union[int, float]],
              color: str = 'red', linewidth: int = 4) -> None:

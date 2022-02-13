@@ -11,8 +11,7 @@ This module contains simpleplots' utilities.
 __all__ = ('get_text_dimensions', 'normalize_float', 'decimals', 'isint',
            'normalize_values', 'scale_range', 'frange', 'smartrange', 'get_font')
 
-from .base import Tuple, List, Union, Iterable
-
+from typing import Tuple, List, Union, Iterable
 from PIL import ImageFont
 from decimal import *
 import numpy as np

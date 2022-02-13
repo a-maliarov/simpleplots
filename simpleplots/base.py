@@ -8,9 +8,9 @@ This module contains all the dataclasses.
 
 """
 
-__all__ = ('Theme', 'Axes', 'Tuple', 'List', 'Iterable', 'Union')
+__all__ = ('Coords', 'Theme', 'Axes')
 
-from typing import Tuple, List, Iterable, Union
+from typing import Tuple
 from dataclasses import dataclass
 from collections import namedtuple
 import numpy as np
