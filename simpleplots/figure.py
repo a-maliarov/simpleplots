@@ -263,11 +263,11 @@ class Figure(object):
 
         self.img.show()
 
-    def save(self, path: str, autoclose: bool = True):
+    def save(self, path: str, autoclose: bool = True, resample: int = Image.BILINEAR):
         """Saves the figure as an image by the given path."""
         origin_size = (self.width // 2, self.height // 2)
-        self.img = self.img.resize(size=origin_size, resample=Image.ANTIALIAS)
-        self.img.save(path)
+        self.img = self.img.resize(size=origin_size, resample=resample)
+        self.img.save(path, compress_level=1)
 
         if autoclose:
             self.close()
