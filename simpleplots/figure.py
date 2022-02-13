@@ -11,7 +11,7 @@ This module contains Figure instance.
 __all__ = ('Figure')
 
 from .base import Tuple, Theme, Axes, Coords, List, Union, Tuple
-from .utils import get_text_dimensions, smartrange, normalize_values
+from .utils import get_text_dimensions, smartrange, normalize_values, get_font
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
 from .ticker import MaxNLocator
@@ -19,7 +19,6 @@ from .ticker import MaxNLocator
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import gc
-import os
 
 #-------------------------------------------------------------------------------
 
@@ -53,18 +52,14 @@ class Figure(object):
         self.height = size[1] * 2
         self.theme = theme
 
-        package_directory_path = os.path.abspath(os.path.dirname(__file__))
-        self.fonts_folder = os.path.join(package_directory_path, 'fonts')
-
         self.img = None
         self.draw = None
+        self.axes = list()
 
         self.spines = Spines(self.width, self.height, self.theme)
         self.grid = PointsGrid(self.spines, self.theme)
         self.x_locator = MaxNLocator()
         self.y_locator = MaxNLocator()
-
-        self.axes = list()
 
     def _create_empty_image(self, _mode: str = 'RGB') -> None:
         """Creates an empty image and initializes ImageDraw."""
@@ -79,7 +74,7 @@ class Figure(object):
         """Draws graph spines."""
         for spine in self.spines.all:
             self.draw.line(
-                spine,
+                xy=spine,
                 fill=self.theme.spine_color,
                 width=self.theme.spine_width
             )
@@ -127,7 +122,7 @@ class Figure(object):
 
             line_coords = self.grid.get_x_line_coords(x_index)
             self.draw.line(
-                line_coords,
+                xy=line_coords,
                 fill=self.theme.grid_line_color,
                 width=self.theme.grid_line_width
             )
@@ -138,7 +133,7 @@ class Figure(object):
 
             line_coords = self.grid.get_y_line_coords(y_index)
             self.draw.line(
-                line_coords,
+                xy=line_coords,
                 fill=self.theme.grid_line_color,
                 width=self.theme.grid_line_width
             )
@@ -151,7 +146,7 @@ class Figure(object):
 
             tick_coords = self.grid.get_x_tick_coords(x_index)
             self.draw.line(
-                tick_coords,
+                xy=tick_coords,
                 fill=self.theme.tick_line_color,
                 width=self.theme.tick_line_width
             )
@@ -162,17 +157,14 @@ class Figure(object):
 
             tick_coords = self.grid.get_y_tick_coords(y_index)
             self.draw.line(
-                tick_coords,
+                xy=tick_coords,
                 fill=self.theme.tick_line_color,
                 width=self.theme.tick_line_width
             )
 
     def _draw_tick_labels(self) -> None:
         """Draws major ticks labels."""
-        tick_font = ImageFont.truetype(
-            os.path.join(self.fonts_folder, self.theme.tick_label_font),
-            int(self.width * self.theme.tick_label_size_perc)
-        )
+        tick_font = get_font('tick_label', self.theme, self.width)
 
         for x_index, x_value in enumerate(self.grid.xvalues):
             if not x_value in self.grid.x_major_ticks:
@@ -181,13 +173,8 @@ class Figure(object):
             text = str(x_value)
             coords = self.grid.get_x_tick_label_coords(x_index, text, tick_font)
 
-            self.draw.text(
-                coords,
-                text=text,
-                fill=self.theme.tick_label_color,
-                font=tick_font,
-                anchor="mm"
-            )
+            self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
+                           fill=self.theme.tick_label_color)
 
         for y_index, y_value in enumerate(reversed(self.grid.yvalues)):
             if not y_value in self.grid.y_major_ticks:
@@ -196,13 +183,8 @@ class Figure(object):
             text = str(y_value)
             coords = self.grid.get_y_tick_label_coords(y_index, text, tick_font)
 
-            self.draw.text(
-                coords,
-                text=text,
-                fill=self.theme.tick_label_color,
-                font=tick_font,
-                anchor="mm"
-            )
+            self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
+                           fill=self.theme.tick_label_color)
 
     def _find_axes_points(self, xvalues: List[Union[int, float]],
                           yvalues: List[Union[int, float]]) -> List[Tuple[int, int]]:
@@ -255,11 +237,7 @@ class Figure(object):
 
         """
 
-        title_font = ImageFont.truetype(
-            os.path.join(self.fonts_folder, self.theme.title_font),
-            int(self.width * self.theme.title_size_perc)
-        )
-
+        title_font = get_font('title', self.theme, self.width)
         text_width, text_height = get_text_dimensions(text, title_font)
 
         text_coords = (
