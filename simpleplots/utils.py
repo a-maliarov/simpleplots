@@ -9,7 +9,7 @@ This module contains simpleplots' utilities.
 """
 
 __all__ = ('get_text_dimensions', 'normalize_float', 'decimals', 'isint',
-           'normalize_values', 'scale_range', 'frange', 'smartrange')
+           'normalize_values', 'scale_range', 'frange', 'smartrange', 'get_font')
 
 from .base import Tuple, List, Union, Iterable
 
@@ -25,6 +25,24 @@ getcontext().prec = 6
 
 INT_DTYPES: List[str] = ['int8', 'int16', 'int32', 'int64']
 FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128']
+
+#-------------------------------------------------------------------------------
+
+def get_font(type_, theme, image_width):
+    package_directory_path = os.path.abspath(os.path.dirname(__file__))
+    fonts_folder = os.path.join(package_directory_path, 'fonts')
+
+    if type_ == 'tick_label':
+        return ImageFont.truetype(
+            os.path.join(fonts_folder, theme.tick_label_font),
+            int(image_width * theme.tick_label_size_perc)
+        )
+
+    elif type_ == 'title':
+        return ImageFont.truetype(
+            os.path.join(fonts_folder, theme.title_font),
+            int(image_width * theme.title_size_perc)
+        )
 
 #-------------------------------------------------------------------------------
 
