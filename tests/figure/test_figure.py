@@ -92,7 +92,9 @@ class TestFigure(unittest.TestCase):
         fig.title('Test')
         fig.save(os.path.join(here, 'graph.png'))
 
-        self.assertTrue('graph.png' in os.listdir(here))
+        with self.subTest():
+            self.assertTrue('graph.png' in os.listdir(here))
+        os.remove(os.path.join(here, 'graph.png'))
 
     def test_show(self):
         # Not a real test yet
