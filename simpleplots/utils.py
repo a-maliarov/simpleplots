@@ -9,9 +9,11 @@ This module contains simpleplots' utilities.
 """
 
 __all__ = ('get_text_dimensions', 'normalize_float', 'decimals', 'isint',
-           'normalize_values', 'scale_range', 'frange', 'smartrange', 'get_font')
+           'normalize_values', 'scale_range', 'frange', 'smartrange',
+           'get_font', 'lcm')
 
 from typing import Tuple, List, Union, Iterable
+from functools import reduce
 from PIL import ImageFont
 from decimal import *
 import numpy as np
@@ -62,6 +64,10 @@ def normalize_float(n: float, r: int = 4) -> float:
     return n
 
 #-------------------------------------------------------------------------------
+
+def find_gcd(lst):
+    x = reduce(math.gcd, lst)
+    return x
 
 def decimals(n: float) -> int:
     return len(str(n).split('.')[1]) if len(str(n).split('.')) == 2 else 0
@@ -124,7 +130,9 @@ def smartrange(vmin: Union[int, float], vmax: Union[int, float],
     if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):
 
         if (isint(vmin) and isint(vmax) and origin_values.dtype in INT_DTYPES):
-            n_range = np.arange(int(vmin), int(vmax) + 1, 1)
+            all_values = np.append(origin_values, [int(vmin), int(vmax)])
+            step = find_gcd(all_values)
+            n_range = np.arange(int(vmin), int(vmax) + 1, step)
             #-------------------------------------------------------------------
             if max([abs(n) for n in n_range]) <= 10 and len(n_range) <= 5:
                 return np.asarray([i for i in frange(vmin, vmax, 0.1)])

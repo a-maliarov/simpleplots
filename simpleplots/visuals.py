@@ -15,6 +15,7 @@ from .base import Coords, Theme
 from .utils import get_text_dimensions
 
 from typing import List
+import numpy as np
 
 #-------------------------------------------------------------------------------
 
@@ -137,12 +138,12 @@ class PointsGrid(object):
     def get_y_line_coords(self, y_index):
         return Coords(
             self.spines.horizontal_offset,
-            self.spines.vertical_offset + self.vertical_offset         \
-                                        + self.cell_height * y_index,
-            self.spines.horizontal_offset + self.horizontal_offset * 2 \
+            self.spines.vertical_offset + self.vertical_offset + self.height \
+                                        - self.cell_height * y_index,
+            self.spines.horizontal_offset + self.horizontal_offset * 2       \
                                           + self.width,
-            self.spines.vertical_offset + self.vertical_offset
-                                        + self.cell_height * y_index   \
+            self.spines.vertical_offset + self.vertical_offset + self.height
+                                        - self.cell_height * y_index         \
         )
 
     def get_x_tick_coords(self, x_index):
@@ -160,11 +161,11 @@ class PointsGrid(object):
     def get_y_tick_coords(self, y_index):
         return Coords(
             self.spines.horizontal_offset - self.tick_length,
-            self.spines.vertical_offset + self.vertical_offset \
-                                        + self.cell_height * y_index,
+            self.spines.vertical_offset + self.vertical_offset + self.height \
+                                        - self.cell_height * y_index,
             self.spines.horizontal_offset,
-            self.spines.vertical_offset + self.vertical_offset \
-                                        + self.cell_height * y_index
+            self.spines.vertical_offset + self.vertical_offset + self.height \
+                                        - self.cell_height * y_index
         )
 
     def get_x_tick_label_coords(self, x_index, text, font):
@@ -183,10 +184,10 @@ class PointsGrid(object):
         text_width, text_height = get_text_dimensions(text, font)
 
         return (
-            self.spines.horizontal_offset - self.tick_length * 2 \
+            self.spines.horizontal_offset - self.tick_length * 2             \
                                           - text_width / 2,
-            self.spines.vertical_offset + self.vertical_offset \
-                                        + self.cell_height * y_index,
+            self.spines.vertical_offset + self.vertical_offset + self.height \
+                                        - self.cell_height * y_index,
         )
 
     def get_title_coords(self, text, font):
@@ -208,15 +209,15 @@ class PointsGrid(object):
         """
 
         self.x_connections = dict()
-        for x_index, x_value in enumerate(self.xvalues):
+        for x_index, x_value in np.ndenumerate(self.xvalues):
             x_coordinate = self.spines.horizontal_offset + self.horizontal_offset \
-                         + (self.cell_width * x_index + 1)
+                         + (self.cell_width * x_index[0] + 1)
             self.x_connections[x_value] = x_coordinate
 
         self.y_connections = dict()
-        for y_index, y_value in enumerate(self.yvalues):
+        for y_index, y_value in np.ndenumerate(self.yvalues):
             y_coordinate = self.spines.vertical_offset + self.vertical_offset \
-                         + self.cell_height * (len(self.yvalues) - y_index - 1)
+                         + self.cell_height * (len(self.yvalues) - y_index[0] - 1)
             self.y_connections[y_value] = y_coordinate
 
 #-------------------------------------------------------------------------------

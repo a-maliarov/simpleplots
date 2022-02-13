@@ -54,8 +54,7 @@ class Theme:
 
 @dataclass
 class Axes():
-    xvalues: np.ndarray
-    yvalues: np.ndarray
+    values: np.ndarray
     color: str = 'red'
     linewidth: int = 4
 

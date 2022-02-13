@@ -80,7 +80,7 @@ class Figure(object):
                 width=self.theme.spine_width
             )
 
-    def _set_grid_values(self) -> None:
+    def _set_grid_values_and_ticks(self) -> None:
         """
         Fills gaps in input values range, finds major ticks and saves all the
         information to PointsGrid.
@@ -103,36 +103,42 @@ class Figure(object):
 
         """
 
-        xvalues = np.concatenate([axes.xvalues for axes in self.axes])
+        xvalues = np.concatenate([axes.values[0] for axes in self.axes])
         x_major_ticks = self.x_locator.tick_values(np.min(xvalues), np.max(xvalues))
+
         xvmin, xvmax = np.min(x_major_ticks), np.max(x_major_ticks)
         self.grid.xvalues = smartrange(xvmin, xvmax, xvalues)
-        self.grid.x_major_ticks = x_major_ticks
 
-        yvalues = np.concatenate([axes.yvalues for axes in self.axes])
+        sorter = np.argsort(self.grid.xvalues)
+        mti = sorter[np.searchsorted(self.grid.xvalues, x_major_ticks, sorter=sorter)]
+        self.grid.x_major_ticks = mti
+
+        #-----------------------------------------------------------------------
+
+        yvalues = np.concatenate([axes.values[1] for axes in self.axes])
         y_major_ticks = self.y_locator.tick_values(np.min(yvalues), np.max(yvalues))
+
         yvmin, yvmax = np.min(y_major_ticks), np.max(y_major_ticks)
         self.grid.yvalues = smartrange(yvmin, yvmax, yvalues)
-        self.grid.y_major_ticks = y_major_ticks
+
+        sorter = np.argsort(self.grid.yvalues)
+        mti = sorter[np.searchsorted(self.grid.yvalues, y_major_ticks, sorter=sorter)]
+        self.grid.y_major_ticks = mti
 
     def _draw_grid(self) -> None:
         """Draws grid lines within spines box."""
-        for x_index, x_value in enumerate(self.grid.xvalues):
-            if not x_value in self.grid.x_major_ticks:
-                continue
-
+        for x_index in self.grid.x_major_ticks:
             line_coords = self.grid.get_x_line_coords(x_index)
+
             self.draw.line(
                 xy=line_coords,
                 fill=self.theme.grid_line_color,
                 width=self.theme.grid_line_width
             )
 
-        for y_index, y_value in enumerate(reversed(self.grid.yvalues)):
-            if not y_value in self.grid.y_major_ticks:
-                continue
-
+        for y_index in self.grid.y_major_ticks:
             line_coords = self.grid.get_y_line_coords(y_index)
+
             self.draw.line(
                 xy=line_coords,
                 fill=self.theme.grid_line_color,
@@ -141,22 +147,18 @@ class Figure(object):
 
     def _draw_ticks(self) -> None:
         """Draws ticks along spines box."""
-        for x_index, x_value in enumerate(self.grid.xvalues):
-            if not x_value in self.grid.x_major_ticks:
-                continue
-
+        for x_index in self.grid.x_major_ticks:
             tick_coords = self.grid.get_x_tick_coords(x_index)
+
             self.draw.line(
                 xy=tick_coords,
                 fill=self.theme.tick_line_color,
                 width=self.theme.tick_line_width
             )
 
-        for y_index, y_value in enumerate(reversed(self.grid.yvalues)):
-            if not y_value in self.grid.y_major_ticks:
-                continue
-
+        for y_index in self.grid.y_major_ticks:
             tick_coords = self.grid.get_y_tick_coords(y_index)
+
             self.draw.line(
                 xy=tick_coords,
                 fill=self.theme.tick_line_color,
@@ -167,35 +169,28 @@ class Figure(object):
         """Draws major ticks labels."""
         tick_font = get_font('tick_label', self.theme, self.width)
 
-        for x_index, x_value in enumerate(self.grid.xvalues):
-            if not x_value in self.grid.x_major_ticks:
-                continue
-
-            text = str(x_value)
+        for x_index in self.grid.x_major_ticks:
+            text = str(self.grid.xvalues[x_index])
             coords = self.grid.get_x_tick_label_coords(x_index, text, tick_font)
 
             self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
                            fill=self.theme.tick_label_color)
 
-        for y_index, y_value in enumerate(reversed(self.grid.yvalues)):
-            if not y_value in self.grid.y_major_ticks:
-                continue
-
-            text = str(y_value)
+        for y_index in self.grid.y_major_ticks:
+            text = str(self.grid.yvalues[y_index])
             coords = self.grid.get_y_tick_label_coords(y_index, text, tick_font)
 
             self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
                            fill=self.theme.tick_label_color)
 
-    def _find_axes_points(self, xvalues: List[Union[int, float]],
-                          yvalues: List[Union[int, float]]) -> List[Tuple[int, int]]:
+    def _find_axes_points(self, values: np.ndarray) -> List[Tuple[int, int]]:
         """
         Create a list of axes points coordinates.
 
         """
 
         points = list()
-        for x, y in zip(xvalues, yvalues):
+        for x, y in np.dstack(values)[0]:
             x_coordinate = self.grid.x_connections[x]
             y_coordinate = self.grid.y_connections[y]
             point_coords = (x_coordinate, y_coordinate)
@@ -258,10 +253,11 @@ class Figure(object):
 
         xvalues = normalize_values(xvalues)
         yvalues = normalize_values(yvalues)
-        axes = Axes(xvalues, yvalues, color, linewidth)
+        values = np.asarray([xvalues, yvalues])
+        axes = Axes(values, color, linewidth)
         self.axes.append(axes)
 
-        self._set_grid_values()
+        self._set_grid_values_and_ticks()
         self.grid.configure_size()
         self.grid.map_values_with_coords()
 
@@ -272,7 +268,7 @@ class Figure(object):
         self._draw_tick_labels()
 
         for axes in self.axes:
-            points = self._find_axes_points(axes.xvalues, axes.yvalues)
+            points = self._find_axes_points(axes.values)
             self._draw_axes(points, axes.color, axes.linewidth)
 
     def show(self) -> None:
