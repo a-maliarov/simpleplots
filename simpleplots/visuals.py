@@ -187,6 +187,16 @@ class PointsGrid(object):
                                         + self.cell_height * y_index,
         )
 
+    def get_title_coords(self, text, font):
+        text_width, text_height = get_text_dimensions(text, font)
+
+        return (
+            self.spines.horizontal_offset + self.horizontal_offset \
+                                          + self.width / 2,
+            self.spines.vertical_offset - self.tick_length * 2     \
+                                        - text_height / 2,
+        )
+
     def map_values_with_coords(self) -> None:
         """
         Saves axes' connections based on the distance between values, so later,
