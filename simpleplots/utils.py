@@ -8,9 +8,9 @@ This module contains simpleplots' utilities.
 
 """
 
-__all__ = ('get_text_dimensions', 'normalize_float', 'decimals', 'isint',
-           'normalize_values', 'scale_range', 'frange', 'smartrange',
-           'get_font', 'lcm')
+__all__ = ('get_font', 'get_text_dimensions', 'normalize_float', 'find_gcd',
+           'decimals', 'isint', 'normalize_values', 'scale_range', 'frange',
+           'smartrange')
 
 from typing import Tuple, List, Union, Iterable
 from functools import reduce
@@ -24,6 +24,7 @@ getcontext().prec = 6
 
 #-------------------------------------------------------------------------------
 
+DISPLAYABLE: int = 30720
 INT_DTYPES: List[str] = ['int8', 'int16', 'int32', 'int64']
 FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128']
 
@@ -58,10 +59,8 @@ def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
 
 #-------------------------------------------------------------------------------
 
-def normalize_float(n: float, r: int = 4) -> float:
-    n = float(Decimal(n).normalize())
-    n = round(n, r)
-    return n
+def normalize_float(n: float) -> float:
+    return float(Decimal(n).normalize())
 
 #-------------------------------------------------------------------------------
 
@@ -70,6 +69,8 @@ def find_gcd(lst):
     return x
 
 def decimals(n: float) -> int:
+    if 'e' in str(n):
+        return int(str(n).split('e')[1][1:])
     return len(str(n).split('.')[1]) if len(str(n).split('.')) == 2 else 0
 
 def isint(n: Union[int, float]) -> bool:
@@ -84,8 +85,15 @@ def normalize_values(values: List[Union[int, float]]) -> np.ndarray:
         return values
 
     elif values.dtype in FLOAT_DTYPES:
-        values = np.around(values, decimals=4)
-        return values
+        scale = max([decimals(normalize_float(n)) for n in values])
+        step = 1 * (10 ** -scale)
+        max_value = normalize_float(np.max(values))
+
+        if max_value / step / DISPLAYABLE > 3:
+            round_to = int(math.log10(int(max_value / step / DISPLAYABLE))) + 1
+            values = np.around(values, decimals=round_to)
+
+        return np.asarray([normalize_float(n) for n in values])
 
     else:
         raise TypeError('unknown input datatype')
@@ -142,7 +150,7 @@ def smartrange(vmin: Union[int, float], vmax: Union[int, float],
         else:
             start, stop = normalize_float(vmin), normalize_float(vmax)
             start_scale, stop_scale = decimals(start), decimals(stop)
-            origin_scale = max([decimals(n) for n in origin_values])
+            origin_scale = max([decimals(normalize_float(n)) for n in origin_values])
 
             scale = max(start_scale, stop_scale, origin_scale)
             step = 1 * (10 ** -scale)
