@@ -24,7 +24,7 @@ getcontext().prec = 6
 
 #-------------------------------------------------------------------------------
 
-DISPLAYABLE: int = 30720
+DISPLAYABLE: int = 15360 # maximum number of elements per axis
 INT_DTYPES: List[str] = ['int8', 'int16', 'int32', 'int64']
 FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128']
 
