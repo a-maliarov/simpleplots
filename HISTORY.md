@@ -13,3 +13,5 @@
   1. Major approach changes.
   2. Major boost in speed.
   3. Minor memory consumption optimization.
++ **Version 0.5.1**:
+  1. Fixed minor bug with small scale integers in `frange`.
