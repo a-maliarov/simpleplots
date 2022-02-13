@@ -9,3 +9,7 @@
 + **Version 0.4.0**:
   1. Add numpy usage.
   2. Fix the bug with the tool being frozen because of generating an enormous length list.
++ **Version 0.4.1 - 0.5.0**:
+  1. Major approach changes.
+  2. Major boost in speed.
+  3. Minor memory consumption optimization.
