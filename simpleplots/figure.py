@@ -183,14 +183,14 @@ class Figure(object):
             self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
                            fill=self.theme.tick_label_color)
 
-    def _find_axes_points(self, values: np.ndarray) -> List[Tuple[int, int]]:
+    def _find_axes_points(self, axes: Axes) -> List[Tuple[int, int]]:
         """
         Create a list of axes points coordinates.
 
         """
 
         points = list()
-        for x, y in np.dstack(values)[0]:
+        for x, y in axes.points:
             x_coordinate = self.grid.x_connections[x]
             y_coordinate = self.grid.y_connections[y]
             point_coords = (x_coordinate, y_coordinate)
@@ -268,7 +268,7 @@ class Figure(object):
         self._draw_tick_labels()
 
         for axes in self.axes:
-            points = self._find_axes_points(axes.values)
+            points = self._find_axes_points(axes)
             self._draw_axes(points, axes.color, axes.linewidth)
 
     def show(self) -> None:

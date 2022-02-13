@@ -11,7 +11,7 @@ This module contains all the dataclasses.
 __all__ = ('Coords', 'Theme', 'Axes')
 
 from typing import Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import namedtuple
 import numpy as np
 
@@ -57,5 +57,9 @@ class Axes():
     values: np.ndarray
     color: str = 'red'
     linewidth: int = 4
+    points: np.ndarray = field(init=False)
+
+    def __post_init__(self):
+        self.points = np.dstack(self.values)[0]
 
 #-------------------------------------------------------------------------------
