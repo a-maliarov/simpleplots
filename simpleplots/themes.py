@@ -28,7 +28,7 @@ class StandardTheme(Theme):
     grid_line_color = (0, 0, 0)
     grid_line_width = 2
 
-    tick_length_perc = 0.005
+    tick_length_perc = 0.0075
     tick_line_color = (0, 0, 0)
     tick_line_width = 3
 
