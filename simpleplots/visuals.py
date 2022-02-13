@@ -12,6 +12,7 @@ between axes' values and image coordinates.
 __all__ = ('Spines', 'PointsGrid')
 
 from .base import Coords, Theme, List
+from .utils import get_text_dimensions
 
 #-------------------------------------------------------------------------------
 
@@ -94,6 +95,8 @@ class PointsGrid(object):
         self.horizontal_offset = (self.spines.width - self.width) / 2
         self.vertical_offset = (self.spines.height - self.height) / 2
 
+        self.tick_length = self.spines.width * self.theme.tick_length_perc
+
         self.xvalues = None
         self.yvalues = None
 
@@ -117,6 +120,72 @@ class PointsGrid(object):
 
         self.cell_width = self.width / (len(self.xvalues) - 1)
         self.cell_height = self.height / (len(self.yvalues) - 1)
+
+    def get_x_line_coords(self, x_index):
+        return Coords(
+            self.spines.horizontal_offset + self.horizontal_offset \
+                                          + self.cell_width * x_index,
+            self.spines.vertical_offset,
+            self.spines.horizontal_offset + self.horizontal_offset \
+                                          + self.cell_width * x_index,
+            self.spines.vertical_offset + self.vertical_offset * 2 \
+                                        + self.height
+        )
+
+    def get_y_line_coords(self, y_index):
+        return Coords(
+            self.spines.horizontal_offset,
+            self.spines.vertical_offset + self.vertical_offset         \
+                                        + self.cell_height * y_index,
+            self.spines.horizontal_offset + self.horizontal_offset * 2 \
+                                          + self.width,
+            self.spines.vertical_offset + self.vertical_offset
+                                        + self.cell_height * y_index   \
+        )
+
+    def get_x_tick_coords(self, x_index):
+        return Coords(
+            self.spines.horizontal_offset + self.horizontal_offset \
+                                          + self.cell_width * x_index,
+            self.spines.vertical_offset + self.vertical_offset * 2 \
+                                        + self.height,
+            self.spines.horizontal_offset + self.horizontal_offset \
+                                          + self.cell_width * x_index,
+            self.spines.vertical_offset + self.vertical_offset * 2 \
+                                        + self.height + self.tick_length
+        )
+
+    def get_y_tick_coords(self, y_index):
+        return Coords(
+            self.spines.horizontal_offset - self.tick_length,
+            self.spines.vertical_offset + self.vertical_offset \
+                                        + self.cell_height * y_index,
+            self.spines.horizontal_offset,
+            self.spines.vertical_offset + self.vertical_offset \
+                                        + self.cell_height * y_index
+        )
+
+    def get_x_tick_label_coords(self, x_index, text, font):
+        text_width, text_height = get_text_dimensions(text, font)
+
+        return (
+            self.spines.horizontal_offset + self.horizontal_offset \
+                                          + self.cell_width * x_index,
+            self.spines.vertical_offset + self.vertical_offset * 2 \
+                                        + self.height              \
+                                        + self.tick_length * 2     \
+                                        + text_height / 2,
+        )
+
+    def get_y_tick_label_coords(self, y_index, text, font):
+        text_width, text_height = get_text_dimensions(text, font)
+
+        return (
+            self.spines.horizontal_offset - self.tick_length * 2 \
+                                          - text_width / 2,
+            self.spines.vertical_offset + self.vertical_offset \
+                                        + self.cell_height * y_index,
+        )
 
     def map_values_with_coords(self) -> None:
         """
