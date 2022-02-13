@@ -1,5 +1,3 @@
-![simpleplots](https://raw.githubusercontent.com/a-maliarov/simpleplots/main/ext/logo.png)
-This library is created with the following idea in mind: "**If, for some reason, I need to create a lot of simple linear graphs and save their images, I don't want to worry about memory leaks. It must be easy to plot a simple 2D graph and save the figure, even if it's 100 of them!**"
 # Comparizon
 This folder contains performance test results in comparizon to matplotlib. Main test subjects are memory and time consumption. The data has been collected using [memory_profiler](https://github.com/pythonprofilers/memory_profiler) library.
 
@@ -7,3 +5,6 @@ This folder contains performance test results in comparizon to matplotlib. Main 
 ![simpleplots](200_points_2_axes/200_points_2_axes_results.png)
 ![simpleplots](2000_points_2_axes/2000_points_2_axes_results.png)
 ![simpleplots](20000_points_2_axes/20000_points_2_axes_results.png)
+
+## Additional
++ If you have found an error with testing method, or an inaccuracy, please, open an issue regarding this problem. The main objective is not to be better than matplotlib, but to optimize simpleplots. As mentioned at the main page: *The project is, obviously, not trying to compete with matplotlib in data analysis, but aims to satisfy a specific purpose of being able to create and save a large number of figures in the most efficient, yet accurate way.*
