@@ -157,6 +157,7 @@ def smartrange(vmin: Union[int, float], vmax: Union[int, float],
         else:
             start, stop = normalize_float(vmin), normalize_float(vmax)
             start_scale, stop_scale = decimals(start), decimals(stop)
+            origin_values = np.asarray([float(n) for n in origin_values])
             origin_scale = max([decimals(normalize_float(n)) for n in origin_values])
 
             scale = max(start_scale, stop_scale, origin_scale)
