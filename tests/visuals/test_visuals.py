@@ -9,6 +9,7 @@ class TestTheme(Theme):
     spine_box_height_perc = 0.8
     grid_box_width_perc = 0.9
     grid_box_height_perc = 0.9
+    tick_length_perc = 0.0075
 
 #-----------------------------------------------------------------------------
 
