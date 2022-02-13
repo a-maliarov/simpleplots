@@ -82,6 +82,13 @@ def normalize_values(values: List[Union[int, float]]) -> np.ndarray:
     values = np.asarray(values)
 
     if values.dtype in INT_DTYPES:
+        step = find_gcd(values)
+        max_value = np.max(values)
+
+        if max_value / step / DISPLAYABLE > 3:
+            round_to = int(math.log10(int(max_value / step / DISPLAYABLE))) + 1
+            values = np.around(values, decimals=-round_to)
+
         return values
 
     elif values.dtype in FLOAT_DTYPES:
