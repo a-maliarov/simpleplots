@@ -282,7 +282,7 @@ class Figure(object):
         PPM file, and calls the xv utility. On Windows, it saves the image to a
         temporary BMP file, and uses the standard BMP display utility to show it
         (usually Paint).
-        
+
         """
 
         self.img.show()
