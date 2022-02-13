@@ -80,7 +80,7 @@ class Figure(object):
                 width=self.theme.spine_width
             )
 
-    def _set_grid_values_and_ticks(self) -> None:
+    def _configure_grid_settings(self) -> None:
         """
         Fills gaps in input values range, finds major ticks and saves all the
         information to PointsGrid.
@@ -108,6 +108,7 @@ class Figure(object):
 
         xvmin, xvmax = np.min(x_major_ticks), np.max(x_major_ticks)
         self.grid.xvalues = smartrange(xvmin, xvmax, xvalues)
+        self.grid.cell_width = self.grid.width / (len(self.grid.xvalues) - 1)
 
         sorter = np.argsort(self.grid.xvalues)
         mti = sorter[np.searchsorted(self.grid.xvalues, x_major_ticks, sorter=sorter)]
@@ -120,6 +121,7 @@ class Figure(object):
 
         yvmin, yvmax = np.min(y_major_ticks), np.max(y_major_ticks)
         self.grid.yvalues = smartrange(yvmin, yvmax, yvalues)
+        self.grid.cell_height = self.grid.height / (len(self.grid.yvalues) - 1)
 
         sorter = np.argsort(self.grid.yvalues)
         mti = sorter[np.searchsorted(self.grid.yvalues, y_major_ticks, sorter=sorter)]
@@ -183,30 +185,16 @@ class Figure(object):
             self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
                            fill=self.theme.tick_label_color)
 
-    def _find_axes_points(self, axes: Axes) -> List[Tuple[int, int]]:
-        """
-        Create a list of axes points coordinates.
+    def _draw_axes(self, axes: Axes) -> None:
+        sorter = np.argsort(self.grid.xvalues)
+        px = sorter[np.searchsorted(self.grid.xvalues, axes.values[0], sorter=sorter)]
+        sorter = np.argsort(self.grid.yvalues)
+        py = sorter[np.searchsorted(self.grid.yvalues, axes.values[1], sorter=sorter)]
 
-        """
+        xy_indices = np.dstack(np.asarray([px, py]))[0]
+        points = np.asarray([self.grid.get_point_coords(x, y) for x, y in xy_indices])
 
-        points = list()
-        for x, y in axes.points:
-            x_coordinate = self.grid.x_connections[x]
-            y_coordinate = self.grid.y_connections[y]
-            point_coords = (x_coordinate, y_coordinate)
-
-            points.append(point_coords)
-
-        return points
-
-    def _draw_axes(self, points: List[Tuple[int, int]], color: str,
-                   linewidth: int) -> None:
-        """
-        Using axes points coordinates draws points and lines on the image.
-
-        """
-
-        for point_index, point in enumerate(points):
+        for point in points:
             self.draw.ellipse(
                 (
                     point[0] - self.theme.point_radius,
@@ -214,17 +202,11 @@ class Figure(object):
                     point[0] + self.theme.point_radius,
                     point[1] + self.theme.point_radius
                 ),
-                fill=color
+                fill=axes.color
             )
 
-            if len(points) == point_index + 1:
-                break
-
-            first_point_coords = point
-            second_point_coords = points[point_index + 1]
-
-            connection_line_coords = (*first_point_coords, *second_point_coords)
-            self.draw.line(connection_line_coords, fill=color, width=linewidth)
+        points = [tuple(p) for p in points]
+        self.draw.line(points, width=axes.linewidth, fill=axes.color)
 
     def title(self, text: str) -> None:
         """
@@ -254,12 +236,11 @@ class Figure(object):
         xvalues = normalize_values(xvalues)
         yvalues = normalize_values(yvalues)
         values = np.asarray([xvalues, yvalues])
+
         axes = Axes(values, color, linewidth)
         self.axes.append(axes)
 
-        self._set_grid_values_and_ticks()
-        self.grid.configure_size()
-        self.grid.map_values_with_coords()
+        self._configure_grid_settings()
 
         if self.theme.grid_visibility:
             self._draw_grid()
@@ -268,8 +249,7 @@ class Figure(object):
         self._draw_tick_labels()
 
         for axes in self.axes:
-            points = self._find_axes_points(axes)
-            self._draw_axes(points, axes.color, axes.linewidth)
+            self._draw_axes(axes)
 
     def show(self) -> None:
         """

@@ -109,21 +109,6 @@ class PointsGrid(object):
         self.cell_width = None
         self.cell_height = None
 
-        self.x_connections = None
-        self.y_connections = None
-
-    def configure_size(self) -> None:
-        """
-        Calculates the distance between two points on an image. Say, grid width
-        is 100px, while x-axis values are [1, 2, 3, 4, 5]. Values should be
-        displayed at 0px, 25px, 50px, 75px and 100px accordingly. This step of
-        25px is what this function calculates.
-
-        """
-
-        self.cell_width = self.width / (len(self.xvalues) - 1)
-        self.cell_height = self.height / (len(self.yvalues) - 1)
-
     def get_x_line_coords(self, x_index):
         return Coords(
             self.spines.horizontal_offset + self.horizontal_offset \
@@ -200,24 +185,17 @@ class PointsGrid(object):
                                         - text_height / 2,
         )
 
-    def map_values_with_coords(self) -> None:
-        """
-        Saves axes' connections based on the distance between values, so later,
-        when we have, say, y-100, we can access grid.y_connections dictionary
-        using the value as a key and get the coordinate.
+    def get_x_point_coords(self, x_index):
+        return self.spines.horizontal_offset + self.horizontal_offset \
+                                             + (self.cell_width * x_index + 1)
 
-        """
+    def get_y_point_coords(self, y_index):
+        return self.spines.vertical_offset + self.vertical_offset \
+                        + self.cell_height * (len(self.yvalues) - y_index - 1)
 
-        self.x_connections = dict()
-        for x_index, x_value in np.ndenumerate(self.xvalues):
-            x_coordinate = self.spines.horizontal_offset + self.horizontal_offset \
-                         + (self.cell_width * x_index[0] + 1)
-            self.x_connections[x_value] = x_coordinate
-
-        self.y_connections = dict()
-        for y_index, y_value in np.ndenumerate(self.yvalues):
-            y_coordinate = self.spines.vertical_offset + self.vertical_offset \
-                         + self.cell_height * (len(self.yvalues) - y_index[0] - 1)
-            self.y_connections[y_value] = y_coordinate
+    def get_point_coords(self, x_index, y_index):
+        x_coords = self.get_x_point_coords(x_index)
+        y_coords = self.get_y_point_coords(y_index)
+        return (x_coords, y_coords)
 
 #-------------------------------------------------------------------------------
