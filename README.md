@@ -2,7 +2,7 @@
 This library is created with the following idea in mind: "**If, for some reason, I need to create a lot of simple linear graphs and save their images, I don't want to worry about memory leaks. It must be easy to plot a simple 2D graph and save the figure, even if it's 100 of them!**"
 
 ---
-Pure Python, lightweight, [Pillow](https://github.com/python-pillow/Pillow)-based plotting tool, focused on efficiency and prevention of memory losses. The project is, obviously, not trying to compete with [matplotlib](https://github.com/matplotlib/matplotlib) in data analysis, but aims to satisfy a specific purpose of being able to create and save a large number of figures in the most efficient, yet accurate way.
+Pure Python, lightweight, [Pillow](https://github.com/python-pillow/Pillow)-based plotting tool, **focused on efficiency and prevention of memory losses**. The project is, obviously, not trying to compete with [matplotlib](https://github.com/matplotlib/matplotlib) in data analysis, but aims to satisfy a specific purpose of **being able to create and save a large number of figures in the most efficient, yet accurate way**.
 
 [![Status](https://img.shields.io/pypi/status/simpleplots)](https://pypi.org/project/simpleplots/)
 [![Build Status](https://app.travis-ci.com/a-maliarov/simpleplots.svg?branch=main)](https://app.travis-ci.com/github/a-maliarov/simpleplots)
