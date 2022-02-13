@@ -15,7 +15,6 @@ from .base import Coords, Theme
 from .utils import get_text_dimensions
 
 from typing import List
-import numpy as np
 
 #-------------------------------------------------------------------------------
 
