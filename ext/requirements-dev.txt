@@ -1,0 +1,4 @@
+pillow ~= 9.0.1
+numpy >= 1.21.5
+coverage >= 6.3.1
+codecov >= 2.1.12
