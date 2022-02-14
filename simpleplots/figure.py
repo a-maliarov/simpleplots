@@ -10,13 +10,14 @@ This module contains Figure instance.
 
 __all__ = ('Figure')
 
-from .base import Theme, Axes, Coords
+from .base import Theme, Axes, Size
 from .utils import smartrange, normalize_values, get_font
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
 from .ticker import MaxNLocator
 
-from typing import Tuple, List, Union
+from numpy.typing import ArrayLike
+
 from PIL import Image, ImageDraw
 import numpy as np
 import gc
@@ -25,8 +26,7 @@ import gc
 
 class Figure(object):
 
-    def __init__(self, size: Tuple[int, int] = (1600, 1200),
-                 theme: Theme = StandardTheme) -> None:
+    def __init__(self, size: Size = (1600, 1200), theme: Theme = StandardTheme):
         """
         Initializes the Figure instance responsible for all the operations
         on visualizing plots:
@@ -186,6 +186,7 @@ class Figure(object):
                            fill=self.theme.tick_label_color)
 
     def _draw_axes(self, axes: Axes) -> None:
+        """Draw axes points and connection lines."""
         sorter = np.argsort(self.grid.xvalues)
         px = sorter[np.searchsorted(self.grid.xvalues, axes.values[0], sorter=sorter)]
         sorter = np.argsort(self.grid.yvalues)
@@ -221,8 +222,8 @@ class Figure(object):
         self.draw.text(xy=coords, text=text, font=title_font, anchor="mm",
                        fill=self.theme.title_color)
 
-    def plot(self, xvalues: List[Union[int, float]], yvalues: List[Union[int, float]],
-             color: str = 'red', linewidth: int = 4) -> None:
+    def plot(self, xvalues: ArrayLike, yvalues: ArrayLike, color: str = 'red',
+             linewidth: int = 4) -> None:
         """
         Plot y versus x as lines and/or markers on the image. Can be called
         multiple times from the same figure to include several properly scaled

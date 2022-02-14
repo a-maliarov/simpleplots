@@ -12,9 +12,14 @@ __all__ = ('get_font', 'get_text_dimensions', 'normalize_float', 'find_gcd',
            'decimals', 'isint', 'normalize_values', 'scale_range', 'frange',
            'smartrange')
 
-from typing import Tuple, List, Union, Iterable
-from functools import reduce
+from .base import Theme, Size
+
+from typing import List, Iterable
+from numpy.typing import ArrayLike
+from numbers import Number
 from PIL import ImageFont
+
+from functools import reduce
 from decimal import *
 import numpy as np
 import math
@@ -30,7 +35,8 @@ FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128
 
 #-------------------------------------------------------------------------------
 
-def get_font(type_, theme, image_width):
+def get_font(type_: str, theme: Theme, image_width: int) -> ImageFont:
+    """Return ImageFont based theme, type and image width."""
     package_directory_path = os.path.abspath(os.path.dirname(__file__))
     fonts_folder = os.path.join(package_directory_path, 'fonts')
 
@@ -48,7 +54,7 @@ def get_font(type_, theme, image_width):
 
 #-------------------------------------------------------------------------------
 
-def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
+def get_text_dimensions(text_string: str, font: ImageFont) -> Size:
     """Calculates size of a given text string using given font."""
     ascent, descent = font.getmetrics()
 
@@ -60,25 +66,29 @@ def get_text_dimensions(text_string: str, font: ImageFont) -> Tuple[int, int]:
 #-------------------------------------------------------------------------------
 
 def normalize_float(n: float) -> float:
+    """Normalize floats like '1.230000000003' to just '1.23'."""
     return float(Decimal(n).normalize())
 
 #-------------------------------------------------------------------------------
 
-def find_gcd(lst):
-    x = reduce(math.gcd, lst)
-    return x
+def find_gcd(lst: List[int]) -> int:
+    """Find GCD of a list."""
+    return reduce(math.gcd, lst)
 
 def decimals(n: float) -> int:
+    """Get the number of decimals after comma."""
     if 'e' in str(n):
         return int(str(n).split('e')[1][1:])
     return len(str(n).split('.')[1]) if len(str(n).split('.')) == 2 else 0
 
-def isint(n: Union[int, float]) -> bool:
+def isint(n: Number) -> bool:
+    """Check if number is integer even if type if float."""
     return isinstance(n, int) or n.is_integer()
 
 #-------------------------------------------------------------------------------
 
-def normalize_values(values: List[Union[int, float]]) -> np.ndarray:
+def normalize_values(values: ArrayLike) -> np.ndarray:
+    """Check input values before trying to plot them."""
     values = np.asarray(values)
 
     if values.dtype in INT_DTYPES:
@@ -138,8 +148,7 @@ def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
 
 #-------------------------------------------------------------------------------
 
-def smartrange(vmin: Union[int, float], vmax: Union[int, float],
-               origin_values: np.ndarray) -> np.ndarray:
+def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndarray:
     """Fills gaps between vmin and vmax based on input type."""
 
     if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):

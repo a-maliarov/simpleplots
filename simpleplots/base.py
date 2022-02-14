@@ -8,16 +8,28 @@ This module contains all the dataclasses.
 
 """
 
-__all__ = ('Coords', 'Theme', 'Axes')
+__all__ = ('Coords', 'Theme', 'Axes', 'Point', 'Size')
 
-from typing import Tuple
+from typing import Tuple, NamedTuple
 from dataclasses import dataclass, field
-from collections import namedtuple
+from numbers import Number
 import numpy as np
 
 #-------------------------------------------------------------------------------
 
-Coords = namedtuple("Coords", "x0 y0 x1 y1")
+class Size(NamedTuple):
+    width: int
+    height: int
+
+class Point(NamedTuple):
+    x: Number
+    y: Number
+
+class Coords(NamedTuple):
+    x0: Number
+    y0: Number
+    x1: Number
+    y1: Number
 
 #-------------------------------------------------------------------------------
 
