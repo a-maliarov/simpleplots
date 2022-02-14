@@ -6,7 +6,7 @@ Pure Python, lightweight, [Pillow](https://github.com/python-pillow/Pillow)-base
 
 [![Status](https://img.shields.io/pypi/status/simpleplots)](https://pypi.org/project/simpleplots/)
 [![Build Status](https://img.shields.io/circleci/build/github/a-maliarov/simpleplots)](https://app.circleci.com/pipelines/github/a-maliarov/simpleplots)
-[![Code Coverage](https://img.shields.io/codecov/c/gh/a-maliarov/simpleplots?label=code%20coverage)](https://codecov.io/gh/a-maliarov/simpleplots)
+[![Coverage](https://img.shields.io/codecov/c/gh/a-maliarov/simpleplots?label=coverage)](https://codecov.io/gh/a-maliarov/simpleplots)
 [![Version](https://img.shields.io/pypi/v/simpleplots?color=informational)](https://pypi.org/project/simpleplots/)
 [![Python version](https://img.shields.io/badge/python-3.7%2B-informational)](https://pypi.org/project/simpleplots/)
 [![Downloads](https://img.shields.io/pypi/dm/simpleplots?color=success)](https://pypi.org/project/simpleplots/)
