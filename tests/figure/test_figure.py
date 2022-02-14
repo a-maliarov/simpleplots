@@ -70,6 +70,15 @@ class TestFigure(unittest.TestCase):
         expected = [720.0, 432.0]
         self.assertListEqual(expected, to_test)
 
+    def test_plot_small_floats_list(self):
+        fig = Figure(size=(500, 300))
+        fig.plot([0.000001, 1], [0.000007, 1], color='red', linewidth=7)
+        to_test = [fig.grid.cell_width, fig.grid.cell_height]
+        fig.close()
+
+        expected = [72.0, 43.2]
+        self.assertListEqual(expected, to_test)
+
     def test_multiple_plots(self):
         fig = Figure(size=(500, 300))
         fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)

@@ -23,7 +23,7 @@ class TestTicker(unittest.TestCase):
 
     def test_maxnlocator_value_error_1(self):
         with self.assertRaises(Exception) as context:
-            loc = MaxNLocator(steps='noniterable')
+            loc = MaxNLocator(steps=2)
 
     def test_maxnlocator_value_error_2(self):
         with self.assertRaises(Exception) as context:
