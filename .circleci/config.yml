@@ -1,0 +1,30 @@
+version: 2.1
+
+jobs:
+  bulid:
+    working_directory: ~/simpleplots
+    docker:
+      - image: circleci/python:3.7.5
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install Python deps in a venv
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+          - "venv"
+      - run:
+          name: Running tests
+          command: |
+            python3 -m unittest tests/test_simpleplots.py
+
+workflows:
+  main:
+    jobs:
+      - bulid
