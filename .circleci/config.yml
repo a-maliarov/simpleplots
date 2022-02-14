@@ -16,6 +16,7 @@ jobs:
           name: Running tests
           command: |
             python3 -m unittest tests/test_simpleplots.py
+            codecov
 
 workflows:
   main:
