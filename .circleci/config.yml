@@ -15,7 +15,7 @@ jobs:
       - run:
           name: Running tests
           command: |
-            python3 -m unittest tests/test_simpleplots.py
+            coverage run -m unittest tests/test_simpleplots.py
             codecov
 
 workflows:
