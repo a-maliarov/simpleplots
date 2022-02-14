@@ -1,24 +1,27 @@
 version: 2.1
 
+shared: &shared
+  steps:
+    - checkout
+    - run:
+        name: Install Python deps in a venv
+        command: |
+          sudo pip install --upgrade pip
+          pip install -r ext/requirements-dev.txt
+    - run:
+        name: Running tests
+        command: |
+          coverage run -m unittest tests/test_simpleplots.py
+          codecov
+
 jobs:
-  bulid:
-    working_directory: ~/simpleplots
+  py37:
+    <<: *shared
     docker:
-      - image: circleci/python:3.7.5
-    steps:
-      - checkout
-      - run:
-          name: Install Python deps in a venv
-          command: |
-            sudo pip install --upgrade pip
-            pip install -r ext/requirements-dev.txt
-      - run:
-          name: Running tests
-          command: |
-            coverage run -m unittest tests/test_simpleplots.py
-            codecov
+      - image: circleci/python:3.7
 
 workflows:
+  version: 2.1
   main:
     jobs:
-      - bulid
+      - py37
