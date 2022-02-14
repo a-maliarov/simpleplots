@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from simpleplots.utils import get_text_dimensions, scale_range, smartrange
+from simpleplots.utils import get_text_dimensions, scale_range, smartrange, frange
 import unittest
 import numpy as np
 
@@ -36,6 +36,11 @@ class TestUtils(unittest.TestCase):
         with self.subTest():
             expected = 100
             self.assertEqual(offset, expected)
+
+    def test_frange_without_step(self):
+        to_test = list(frange(0.1, 0.6))
+        expected = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+        self.assertListEqual(to_test, expected)
 
     def test_smartrange_floats_without_gaps(self):
         ov = np.asarray([0.1, 0.2])

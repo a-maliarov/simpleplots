@@ -21,6 +21,18 @@ class TestTicker(unittest.TestCase):
         with self.subTest():
             self.assertFalse(edge.closeto(1, 10))
 
+    def test_maxnlocator_value_error_1(self):
+        with self.assertRaises(Exception) as context:
+            loc = MaxNLocator(steps='noniterable')
+
+    def test_maxnlocator_value_error_2(self):
+        with self.assertRaises(Exception) as context:
+            loc = MaxNLocator(steps=[0, 0, 0])
+
+    def test_maxnlocator_step_correlation(self):
+        loc = MaxNLocator(steps=[2, 8])
+        self.assertListEqual(loc._steps.tolist(), [1, 2, 8, 10])
+
     def test_maxnlocator_integers(self):
         loc = MaxNLocator()
         ticks = loc.tick_values(1, 16)
