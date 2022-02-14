@@ -1,0 +1,23 @@
+version: 2.1
+
+jobs:
+  bulid:
+    working_directory: ~/simpleplots
+    docker:
+      - image: circleci/python:3.7.5
+    steps:
+      - checkout
+      - run:
+          name: Install Python deps in a venv
+          command: |
+            sudo pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: Running tests
+          command: |
+            python3 -m unittest tests/test_simpleplots.py
+
+workflows:
+  main:
+    jobs:
+      - bulid
