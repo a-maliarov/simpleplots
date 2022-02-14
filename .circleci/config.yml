@@ -27,6 +27,11 @@ jobs:
     <<: *shared
     docker:
       - image: circleci/python:3.8
+
+  py39:
+    <<: *shared
+    docker:
+      - image: circleci/python:3.9
         environment:
           UPLOAD_COV: "true"
 
@@ -36,3 +41,4 @@ workflows:
     jobs:
       - py37
       - py38
+      - py39
