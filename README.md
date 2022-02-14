@@ -12,7 +12,7 @@ Pure Python, lightweight, [Pillow](https://github.com/python-pillow/Pillow)-base
 [![Downloads](https://img.shields.io/pypi/dm/simpleplots?color=success)](https://pypi.org/project/simpleplots/)
 
 ## Installation
-You can simply install the library from [PyPi](https://pypi.org/project/amazoncaptcha/) using **pip**.
+You can simply install the library from [PyPi](https://pypi.org/project/simpleplots/) using **pip**.
 ```bash
 pip install simpleplots
 ```
