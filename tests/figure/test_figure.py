@@ -61,7 +61,7 @@ class TestFigure(unittest.TestCase):
         expected = [20.0, 24.0]
         self.assertListEqual(expected, to_test)
 
-    def test_plot_small_floats_list(self):
+    def test_plot_small_floats_small_list(self):
         fig = Figure(size=(500, 300))
         fig.plot([0.000001, 0.000002], [0.000007, 0.000008], color='red', linewidth=7)
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
@@ -70,7 +70,7 @@ class TestFigure(unittest.TestCase):
         expected = [720.0, 432.0]
         self.assertListEqual(expected, to_test)
 
-    def test_plot_small_floats_list(self):
+    def test_plot_small_floats_large_list(self):
         fig = Figure(size=(500, 300))
         fig.plot([0.000001, 1], [0.000007, 1], color='red', linewidth=7)
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
@@ -105,7 +105,6 @@ class TestFigure(unittest.TestCase):
             fig = Figure(size=(500, 300))
             fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
             fig.show()
-            fig.close()
         except:
             pass
 
