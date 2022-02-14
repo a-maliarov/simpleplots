@@ -5,7 +5,7 @@ This library is created with the following idea in mind: "**If, for some reason,
 Pure Python, lightweight, [Pillow](https://github.com/python-pillow/Pillow)-based plotting tool, **focused on efficiency and prevention of memory losses**. The project is, obviously, not trying to compete with [matplotlib](https://github.com/matplotlib/matplotlib) in data analysis, but aims to satisfy a specific purpose of **being able to create and save a large number of figures in the most efficient, yet accurate way**.
 
 [![Status](https://img.shields.io/pypi/status/simpleplots)](https://pypi.org/project/simpleplots/)
-[![Build Status](https://app.travis-ci.com/a-maliarov/simpleplots.svg?branch=main)](https://app.travis-ci.com/github/a-maliarov/simpleplots)
+[![Build Status](https://img.shields.io/circleci/build/github/a-maliarov/simpleplots)](https://app.circleci.com/pipelines/github/a-maliarov/simpleplots)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/a-maliarov/simpleplots?label=code%20coverage)](https://codecov.io/gh/a-maliarov/simpleplots)
 [![Version](https://img.shields.io/pypi/v/simpleplots?color=informational)](https://pypi.org/project/simpleplots/)
 [![Python version](https://img.shields.io/badge/python-3.7%2B-informational)](https://pypi.org/project/simpleplots/)
