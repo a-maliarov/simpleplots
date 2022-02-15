@@ -10,7 +10,7 @@ This module contains simpleplots' utilities.
 
 __all__ = ('get_font', 'get_text_dimensions', 'normalize_float', 'find_gcd',
            'decimals', 'isint', 'normalize_values', 'scale_range', 'frange',
-           'smartrange')
+           'smartrange', 'get_indices_of_values_in_list')
 
 from .base import Theme, Size
 
@@ -52,8 +52,6 @@ def get_font(type_: str, theme: Theme, image_width: int) -> ImageFont:
             int(image_width * theme.title_size_perc)
         )
 
-#-------------------------------------------------------------------------------
-
 def get_text_dimensions(text_string: str, font: ImageFont) -> Size:
     """Calculates size of a given text string using given font."""
     ascent, descent = font.getmetrics()
@@ -69,8 +67,6 @@ def normalize_float(n: float) -> float:
     """Normalize floats like '1.230000000003' to just '1.23'."""
     return float(Decimal(n).normalize())
 
-#-------------------------------------------------------------------------------
-
 def find_gcd(lst: List[int]) -> int:
     """Find GCD of a list."""
     return reduce(math.gcd, lst)
@@ -84,6 +80,14 @@ def decimals(n: float) -> int:
 def isint(n: Number) -> bool:
     """Check if number is integer even if type if float."""
     return isinstance(n, int) or n.is_integer()
+
+#-------------------------------------------------------------------------------
+
+def get_indices_of_values_in_list(values: np.ndarray, lst: np.ndarray) -> np.ndarray:
+    """Get indices of values in list A from list B."""
+    sorter = np.argsort(lst)
+    ind = sorter[np.searchsorted(lst, values, sorter=sorter)]
+    return ind
 
 #-------------------------------------------------------------------------------
 

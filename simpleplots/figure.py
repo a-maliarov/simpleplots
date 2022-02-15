@@ -11,7 +11,8 @@ This module contains Figure instance.
 __all__ = ('Figure')
 
 from .base import Theme, Axes, Size
-from .utils import smartrange, normalize_values, get_font
+from .utils import (get_indices_of_values_in_list, smartrange, normalize_values,
+                    get_font)
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
 from .ticker import MaxNLocator
@@ -105,27 +106,21 @@ class Figure(object):
 
         xvalues = np.concatenate([axes.values[0] for axes in self.axes])
         x_major_ticks = self.x_locator.tick_values(np.min(xvalues), np.max(xvalues))
-
         xvmin, xvmax = np.min(x_major_ticks), np.max(x_major_ticks)
+
         self.grid.xvalues = smartrange(xvmin, xvmax, xvalues)
         self.grid.cell_width = self.grid.width / (len(self.grid.xvalues) - 1)
-
-        sorter = np.argsort(self.grid.xvalues)
-        mti = sorter[np.searchsorted(self.grid.xvalues, x_major_ticks, sorter=sorter)]
-        self.grid.x_major_ticks = mti
+        self.grid.x_major_ticks = get_indices_of_values_in_list(x_major_ticks, self.grid.xvalues)
 
         #-----------------------------------------------------------------------
 
         yvalues = np.concatenate([axes.values[1] for axes in self.axes])
         y_major_ticks = self.y_locator.tick_values(np.min(yvalues), np.max(yvalues))
-
         yvmin, yvmax = np.min(y_major_ticks), np.max(y_major_ticks)
+
         self.grid.yvalues = smartrange(yvmin, yvmax, yvalues)
         self.grid.cell_height = self.grid.height / (len(self.grid.yvalues) - 1)
-
-        sorter = np.argsort(self.grid.yvalues)
-        mti = sorter[np.searchsorted(self.grid.yvalues, y_major_ticks, sorter=sorter)]
-        self.grid.y_major_ticks = mti
+        self.grid.y_major_ticks = get_indices_of_values_in_list(y_major_ticks, self.grid.yvalues)
 
     def _draw_grid(self) -> None:
         """Draws grid lines within spines box."""
@@ -187,10 +182,8 @@ class Figure(object):
 
     def _draw_axes(self, axes: Axes) -> None:
         """Draw axes points and connection lines."""
-        sorter = np.argsort(self.grid.xvalues)
-        px = sorter[np.searchsorted(self.grid.xvalues, axes.values[0], sorter=sorter)]
-        sorter = np.argsort(self.grid.yvalues)
-        py = sorter[np.searchsorted(self.grid.yvalues, axes.values[1], sorter=sorter)]
+        px = get_indices_of_values_in_list(axes.values[0], self.grid.xvalues)
+        py = get_indices_of_values_in_list(axes.values[1], self.grid.yvalues)
 
         xy_indices = np.dstack(np.asarray([px, py]))[0]
         points = np.asarray([self.grid.get_point_coords(x, y) for x, y in xy_indices])
