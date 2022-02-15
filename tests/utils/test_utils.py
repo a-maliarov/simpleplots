@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from simpleplots.utils import get_text_dimensions, scale_range, smartrange, frange
+from simpleplots.utils import get_text_dimensions, smartrange, frange
 import unittest
 import numpy as np
 
@@ -10,32 +10,6 @@ class TestUtils(unittest.TestCase):
 
     def test_get_text_dimensions(self):
         pass
-
-    def test_scale_range(self):
-        scale, offset = scale_range(0.1, 0.3)
-        with self.subTest():
-            expected = 0.1
-            self.assertEqual(scale, expected)
-
-        scale, offset = scale_range(1, 9)
-        with self.subTest():
-            expected = 1
-            self.assertEqual(scale, expected)
-
-        scale, offset = scale_range(1, 20)
-        with self.subTest():
-            expected = 10
-            self.assertEqual(scale, expected)
-
-        scale, offset = scale_range(20, 120)
-        with self.subTest():
-            expected = 100
-            self.assertEqual(scale, expected)
-
-        scale, offset = scale_range(199, 200)
-        with self.subTest():
-            expected = 100
-            self.assertEqual(offset, expected)
 
     def test_frange_without_step(self):
         to_test = list(frange(0.1, 0.6))
