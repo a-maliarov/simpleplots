@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from simpleplots import Figure
+import platform
 import unittest
 import os
 
@@ -99,6 +100,7 @@ class TestFigure(unittest.TestCase):
             self.assertTrue('graph.png' in os.listdir(here))
         os.remove(os.path.join(here, 'graph.png'))
 
+    @unittest.skipIf(platform.platform().startswith('Windows'), reason='No need')
     def test_show(self):
         # Not a real test yet
         try:
