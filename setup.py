@@ -44,7 +44,7 @@ setuptools.setup(
     version=about['__version__'],
     description=about['__description__'],
     packages=['simpleplots'],
-    py_modules=['base', 'figure', 'themes', 'ticker', 'utils', 'visuals'],
+    py_modules=['base', 'dates', 'figure', 'themes', 'ticker', 'utils', 'visuals'],
     include_package_data=True,
     package_data={'': ['*.ttf'], 'simpleplots': ['fonts/*.*']},
     classifiers=classifiers,
