@@ -4,8 +4,8 @@
 simpleplots.ticker
 ~~~~~~~~~~~~~~~~~~
 
-This module contains classes for configuring tick locating. `EdgeInteger` and
-`MaxNLocator` located here are just a simplified version of what you can find
+This module contains classes for configuring tick values. `EdgeInteger` and
+`AutoLocator` located here are just a simplified version of what you can find
 in matplotlib's (https://github.com/matplotlib/matplotlib) `ticker` module.
 
 If you want to understand the logic of calculation it is recommended to check
@@ -13,11 +13,31 @@ matplotlib's original code!
 
 """
 
-__all__ = ('MaxNLocator')
+__all__ = ('Locator', 'AutoLocator')
 
-from .utils import scale_range, normalize_float
-
+from decimal import *
 import numpy as np
+import math
+
+getcontext().prec = 6
+
+#-------------------------------------------------------------------------------
+
+def normalize_float(n: float) -> float:
+    """Normalize floats like '1.230000000003' to just '1.23'."""
+    return float(Decimal(n).normalize())
+
+def scale_range(vmin: float, vmax: float, n: int = 1, threshold: int = 100):
+    """Identifies the maximum scale of the given range."""
+    dv = abs(vmax - vmin)
+    meanv = (vmax + vmin) / 2
+    if abs(meanv) / dv < threshold:
+        offset = 0
+    else:
+        offset = math.copysign(10 ** (math.log10(abs(meanv)) // 1), meanv)
+    scale = 10 ** (math.log10(dv / n) // 1)
+
+    return scale, offset
 
 #-------------------------------------------------------------------------------
 
@@ -50,7 +70,14 @@ class EdgeInteger(object):
             return d
         return d + 1
 
-class MaxNLocator(object):
+#-------------------------------------------------------------------------------
+
+class Locator(object):
+
+    def tick_values(self, vmin, vmax):
+        raise NotImplementedError('Derived must override')
+
+class AutoLocator(Locator):
 
     def __init__(self, nbins=10, steps=[1, 2, 4, 5, 10], integer=False, min_n_ticks=2):
         self._nbins = nbins
