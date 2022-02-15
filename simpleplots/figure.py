@@ -12,10 +12,9 @@ __all__ = ('Figure')
 
 from .base import Theme, Axes, Size
 from .utils import (get_indices_of_values_in_list, smartrange, normalize_values,
-                    get_font)
+                    get_font, choose_locator)
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
-from .ticker import MaxNLocator
 
 from numpy.typing import ArrayLike
 
@@ -60,8 +59,8 @@ class Figure(object):
 
         self.spines = Spines(self.width, self.height, self.theme)
         self.grid = PointsGrid(self.spines, self.theme)
-        self.x_locator = MaxNLocator()
-        self.y_locator = MaxNLocator()
+        self.x_locator = None
+        self.y_locator = None
 
     def _create_empty_image(self, _mode: str = 'RGB') -> None:
         """Creates an empty image and initializes ImageDraw."""
@@ -80,6 +79,13 @@ class Figure(object):
                 fill=self.theme.spine_color,
                 width=self.theme.spine_width
             )
+
+    def _configure_locators(self) -> None:
+        xvalues = np.concatenate([axes.values[0] for axes in self.axes])
+        self.x_locator = choose_locator(xvalues)
+
+        yvalues = np.concatenate([axes.values[1] for axes in self.axes])
+        self.y_locator = choose_locator(yvalues)
 
     def _configure_grid_settings(self) -> None:
         """
@@ -110,7 +116,8 @@ class Figure(object):
 
         self.grid.xvalues = smartrange(xvmin, xvmax, xvalues)
         self.grid.cell_width = self.grid.width / (len(self.grid.xvalues) - 1)
-        self.grid.x_major_ticks = get_indices_of_values_in_list(x_major_ticks, self.grid.xvalues)
+        self.grid.x_major_ticks = get_indices_of_values_in_list(x_major_ticks,
+                                                                self.grid.xvalues)
 
         #-----------------------------------------------------------------------
 
@@ -120,7 +127,8 @@ class Figure(object):
 
         self.grid.yvalues = smartrange(yvmin, yvmax, yvalues)
         self.grid.cell_height = self.grid.height / (len(self.grid.yvalues) - 1)
-        self.grid.y_major_ticks = get_indices_of_values_in_list(y_major_ticks, self.grid.yvalues)
+        self.grid.y_major_ticks = get_indices_of_values_in_list(y_major_ticks,
+                                                                self.grid.yvalues)
 
     def _draw_grid(self) -> None:
         """Draws grid lines within spines box."""
@@ -142,7 +150,7 @@ class Figure(object):
                 width=self.theme.grid_line_width
             )
 
-    def _draw_ticks(self) -> None:
+    def _draw_major_ticks(self) -> None:
         """Draws ticks along spines box."""
         for x_index in self.grid.x_major_ticks:
             tick_coords = self.grid.get_x_tick_coords(x_index)
@@ -234,12 +242,13 @@ class Figure(object):
         axes = Axes(values, color, linewidth)
         self.axes.append(axes)
 
+        self._configure_locators()
         self._configure_grid_settings()
 
         if self.theme.grid_visibility:
             self._draw_grid()
 
-        self._draw_ticks()
+        self._draw_major_ticks()
         self._draw_tick_labels()
 
         for axes in self.axes:
