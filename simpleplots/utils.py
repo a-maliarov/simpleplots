@@ -9,16 +9,19 @@ This module contains simpleplots' utilities.
 """
 
 __all__ = ('get_font', 'get_text_dimensions', 'normalize_float', 'find_gcd',
-           'decimals', 'isint', 'normalize_values', 'scale_range', 'frange',
-           'smartrange', 'get_indices_of_values_in_list')
+           'decimals', 'isint', 'normalize_values', 'frange', 'smartrange'
+           'get_indices_of_values_in_list', 'choose_locator')
 
 from .base import Theme, Size
+from .ticker import Locator, AutoLocator
+from .dates import AutoDateLocator
 
 from typing import List, Iterable
 from numpy.typing import ArrayLike
 from numbers import Number
 from PIL import ImageFont
 
+from datetime import datetime
 from functools import reduce
 from decimal import *
 import numpy as np
@@ -32,6 +35,7 @@ getcontext().prec = 6
 DISPLAYABLE: int = 15360 # maximum number of elements per axis
 INT_DTYPES: List[str] = ['int8', 'int16', 'int32', 'int64']
 FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128']
+DATE_DTYPES: List[str] = ['datetime64']
 
 #-------------------------------------------------------------------------------
 
@@ -116,22 +120,23 @@ def normalize_values(values: ArrayLike) -> np.ndarray:
 
         return np.asarray([normalize_float(n) for n in values])
 
+    elif all([isinstance(e, datetime) for e in values]):
+        values = values.astype('datetime64')
+        return values
+
     else:
         raise TypeError('unknown input datatype')
 
 #-------------------------------------------------------------------------------
 
-def scale_range(vmin: float, vmax: float, n: int = 1, threshold: int = 100):
-    """Identifies the maximum scale of the given range."""
-    dv = abs(vmax - vmin)
-    meanv = (vmax + vmin) / 2
-    if abs(meanv) / dv < threshold:
-        offset = 0
+def choose_locator(values: np.ndarray) -> Locator:
+    """Returns tick locator based on datatype."""
+    if values.dtype in INT_DTYPES or values.dtype in FLOAT_DTYPES:
+        return AutoLocator()
+    elif values.dtype in DATE_DTYPES:
+        return AutoDateLocator()
     else:
-        offset = math.copysign(10 ** (math.log10(abs(meanv)) // 1), meanv)
-    scale = 10 ** (math.log10(dv / n) // 1)
-
-    return scale, offset
+        raise TypeError('unknown input datatype')
 
 #-------------------------------------------------------------------------------
 
