@@ -81,10 +81,10 @@ class Figure(object):
             )
 
     def _configure_locators(self) -> None:
-        xvalues = np.concatenate([axes.values[0] for axes in self.axes])
+        xvalues = np.concatenate([axes.xvalues for axes in self.axes])
         self.x_locator = choose_locator(xvalues)
 
-        yvalues = np.concatenate([axes.values[1] for axes in self.axes])
+        yvalues = np.concatenate([axes.yvalues for axes in self.axes])
         self.y_locator = choose_locator(yvalues)
 
     def _configure_grid_settings(self) -> None:
@@ -110,7 +110,7 @@ class Figure(object):
 
         """
 
-        xvalues = np.concatenate([axes.values[0] for axes in self.axes])
+        xvalues = np.concatenate([axes.xvalues for axes in self.axes])
         x_major_ticks = self.x_locator.tick_values(np.min(xvalues), np.max(xvalues))
         xvmin, xvmax = np.min(x_major_ticks), np.max(x_major_ticks)
 
@@ -121,7 +121,7 @@ class Figure(object):
 
         #-----------------------------------------------------------------------
 
-        yvalues = np.concatenate([axes.values[1] for axes in self.axes])
+        yvalues = np.concatenate([axes.yvalues for axes in self.axes])
         y_major_ticks = self.y_locator.tick_values(np.min(yvalues), np.max(yvalues))
         yvmin, yvmax = np.min(y_major_ticks), np.max(y_major_ticks)
 
@@ -190,8 +190,8 @@ class Figure(object):
 
     def _draw_axes(self, axes: Axes) -> None:
         """Draw axes points and connection lines."""
-        px = get_indices_of_values_in_list(axes.values[0], self.grid.xvalues)
-        py = get_indices_of_values_in_list(axes.values[1], self.grid.yvalues)
+        px = get_indices_of_values_in_list(axes.xvalues, self.grid.xvalues)
+        py = get_indices_of_values_in_list(axes.yvalues, self.grid.yvalues)
 
         xy_indices = np.dstack(np.asarray([px, py]))[0]
         points = np.asarray([self.grid.get_point_coords(x, y) for x, y in xy_indices])
@@ -237,9 +237,8 @@ class Figure(object):
 
         xvalues = normalize_values(xvalues)
         yvalues = normalize_values(yvalues)
-        values = np.asarray([xvalues, yvalues])
 
-        axes = Axes(values, color, linewidth)
+        axes = Axes(xvalues, yvalues, color, linewidth)
         self.axes.append(axes)
 
         self._configure_locators()
