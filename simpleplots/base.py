@@ -66,12 +66,14 @@ class Theme:
 
 @dataclass
 class Axes():
-    values: np.ndarray
+    xvalues: np.ndarray
+    yvalues: np.ndarray
     color: str = 'red'
     linewidth: int = 4
     points: np.ndarray = field(init=False)
 
     def __post_init__(self):
-        self.points = np.dstack(self.values)[0]
+        values = np.asarray([self.xvalues, self.yvalues])
+        self.points = np.dstack(values)[0]
 
 #-------------------------------------------------------------------------------
