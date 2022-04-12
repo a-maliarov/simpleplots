@@ -21,7 +21,7 @@ from numpy.typing import ArrayLike
 from numbers import Number
 from PIL import ImageFont
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import reduce
 from decimal import *
 import numpy as np
@@ -35,7 +35,7 @@ getcontext().prec = 6
 DISPLAYABLE: int = 15360 # maximum number of elements per axis
 INT_DTYPES: List[str] = ['int8', 'int16', 'int32', 'int64']
 FLOAT_DTYPES: List[str] = ['float16', 'float32', 'float64', 'float96', 'float128']
-DATE_DTYPES: List[str] = ['datetime64']
+DATE_DTYPE: str = 'datetime64'
 
 #-------------------------------------------------------------------------------
 
@@ -121,7 +121,11 @@ def normalize_values(values: ArrayLike) -> np.ndarray:
         return np.asarray([normalize_float(n) for n in values])
 
     elif all([isinstance(e, datetime) for e in values]):
-        values = values.astype('datetime64')
+        values = values.astype('datetime64[s]')
+        return values
+
+    elif DATE_DTYPE in str(values.dtype):
+        values = values.astype('datetime64[s]')
         return values
 
     else:
@@ -133,7 +137,7 @@ def choose_locator(values: np.ndarray) -> Locator:
     """Returns tick locator based on datatype."""
     if values.dtype in INT_DTYPES or values.dtype in FLOAT_DTYPES:
         return AutoLocator()
-    elif values.dtype in DATE_DTYPES:
+    elif DATE_DTYPE in str(values.dtype):
         return AutoDateLocator()
     else:
         raise TypeError('unknown input datatype')
@@ -182,5 +186,32 @@ def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndar
             step = 1 * (10 ** -scale)
 
             return np.asarray([i for i in frange(vmin, vmax, step)])
+
+    elif DATE_DTYPE in str(origin_values.dtype):
+        dmin, dmax = np.min(origin_values), np.max(origin_values)
+        datetime_values = [d.astype(datetime) for d in origin_values]
+
+        params = {
+            'seconds': 0,
+            'minutes': 0,
+            'hours': 0,
+            'days': 1
+        }
+
+        if any([d.second for d in datetime_values]):
+            params['seconds'] = 1
+            params['days'] = 0
+
+        elif any([d.minute for d in datetime_values]):
+            params['minutes'] = 1
+            params['days'] = 0
+
+        elif any([d.hour for d in datetime_values]):
+            params['hours'] = 1
+            params['days'] = 0
+
+        values = np.arange(dmin, dmax, timedelta(**params), dtype='datetime64[s]')
+        values = np.append(values, dmax)
+        return values
 
 #-------------------------------------------------------------------------------
