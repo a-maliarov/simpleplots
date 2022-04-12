@@ -81,11 +81,13 @@ class Figure(object):
             )
 
     def _configure_locators(self) -> None:
-        xvalues = np.concatenate([axes.xvalues for axes in self.axes])
-        self.x_locator = choose_locator(xvalues)
+        if not self.x_locator:
+            xvalues = np.concatenate([axes.xvalues for axes in self.axes])
+            self.x_locator = choose_locator(xvalues)
 
-        yvalues = np.concatenate([axes.yvalues for axes in self.axes])
-        self.y_locator = choose_locator(yvalues)
+        if not self.y_locator:
+            yvalues = np.concatenate([axes.yvalues for axes in self.axes])
+            self.y_locator = choose_locator(yvalues)
 
     def _configure_grid_settings(self) -> None:
         """
