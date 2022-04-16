@@ -7,6 +7,8 @@ import unittest
 class TestTheme(Theme):
     spine_box_width_perc = 0.8
     spine_box_height_perc = 0.8
+    spine_box_add_hor_offset = 0.15
+    spine_box_add_ver_offset = 0.25
     grid_box_width_perc = 0.9
     grid_box_height_perc = 0.9
     tick_length_perc = 0.0075
@@ -21,13 +23,11 @@ class TestVisuals(unittest.TestCase):
         to_test = [tuple(i) for i in self.spines.all]
 
         expected = [
-            (10.0, 10.0, 10.0, 90.0),
-            (10.0, 10.0, 90.0, 10.0),
-            (90.0, 10.0, 90.0, 90.0),
-            (10.0, 90.0, 90.0, 90.0)
+            (11.5, 8.0, 11.5, 88.0),
+            (11.5, 8.0, 91.5, 8.0),
+            (91.5, 8.0, 91.5, 88.0),
+            (11.5, 88.0, 91.5, 88.0)
         ]
         self.assertListEqual(to_test, expected)
-
-    # Add tests for the new methods after 0.4.0
 
 #-----------------------------------------------------------------------------

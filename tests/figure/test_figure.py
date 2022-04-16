@@ -23,7 +23,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [36.0, 21.6]
+        expected = [36.0, 18.9]
         self.assertListEqual(expected, to_test)
 
     def test_plot_integers_with_gaps(self):
@@ -32,7 +32,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [18.0, 48.0]
+        expected = [18.0, 42.0]
         self.assertListEqual(expected, to_test)
 
     def test_plot_large_integers_list(self):
@@ -41,7 +41,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [0.144, 0.0864]
+        expected = [0.144, 0.0756]
         self.assertListEqual(expected, to_test)
 
     def test_plot_floats_without_gaps(self):
@@ -50,7 +50,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [360.0, 18.0]
+        expected = [360.0, 15.75]
         self.assertListEqual(expected, to_test)
 
     def test_plot_floats_with_gaps(self):
@@ -59,7 +59,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [20.0, 24.0]
+        expected = [20.0, 21.0]
         self.assertListEqual(expected, to_test)
 
     def test_plot_small_floats_small_list(self):
@@ -68,7 +68,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [720.0, 432.0]
+        expected = [720.0, 378.0]
         self.assertListEqual(expected, to_test)
 
     def test_plot_small_floats_large_list(self):
@@ -77,7 +77,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [72.0, 43.2]
+        expected = [72.0, 37.8]
         self.assertListEqual(expected, to_test)
 
     def test_multiple_plots(self):
@@ -87,7 +87,7 @@ class TestFigure(unittest.TestCase):
         to_test = [fig.grid.cell_width, fig.grid.cell_height]
         fig.close()
 
-        expected = [144.0, 86.4]
+        expected = [144.0, 75.6]
         self.assertListEqual(expected, to_test)
 
     def test_save(self):
@@ -102,7 +102,7 @@ class TestFigure(unittest.TestCase):
 
     @unittest.skipIf(platform.platform().startswith('Windows'), reason='No need')
     def test_show(self):
-        # Not a real test yet
+        # Not a real test
         try:
             fig = Figure(size=(500, 300))
             fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
