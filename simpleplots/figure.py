@@ -12,10 +12,10 @@ __all__ = ('Figure')
 
 from .base import Theme, Axes, Size
 from .utils import (get_indices_of_values_in_list, smartrange, normalize_values,
-                    get_font, choose_locator)
+                    get_font, choose_locator, choose_formatter)
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
-from .ticker import Locator
+from .ticker import Locator, Formatter
 
 from numpy.typing import ArrayLike
 
@@ -93,6 +93,15 @@ class Figure(object):
         if not self.y_locator:
             yvalues = np.concatenate([axes.yvalues for axes in self.axes])
             self.y_locator = choose_locator(yvalues)
+
+    def _configure_formatters(self) -> None:
+        if not self.x_formatter:
+            xvalues = np.concatenate([axes.xvalues for axes in self.axes])
+            self.x_formatter = choose_formatter(xvalues)
+
+        if not self.y_formatter:
+            yvalues = np.concatenate([axes.yvalues for axes in self.axes])
+            self.y_formatter = choose_formatter(yvalues)
 
     def _configure_grid_settings(self) -> None:
         """
@@ -182,17 +191,23 @@ class Figure(object):
         tick_font = get_font('tick_label', self.theme, self.width)
 
         for x_index in self.grid.x_major_ticks:
-            text = str(self.grid.xvalues[x_index])
-            coords = self.grid.get_x_tick_label_coords(x_index, text, tick_font)
+            label = self.x_formatter(self.grid.xvalues[x_index])
+            if not label:
+                continue
 
-            self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
+            coords = self.grid.get_x_tick_label_coords(x_index, label, tick_font)
+
+            self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
                            fill=self.theme.tick_label_color)
 
         for y_index in self.grid.y_major_ticks:
-            text = str(self.grid.yvalues[y_index])
-            coords = self.grid.get_y_tick_label_coords(y_index, text, tick_font)
+            label = self.y_formatter(self.grid.yvalues[y_index])
+            if not label:
+                continue
 
-            self.draw.text(xy=coords, text=text, font=tick_font, anchor="mm",
+            coords = self.grid.get_y_tick_label_coords(y_index, label, tick_font)
+
+            self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
                            fill=self.theme.tick_label_color)
 
     def _draw_axes(self, axes: Axes) -> None:
@@ -223,11 +238,11 @@ class Figure(object):
         elif axis == 'y':
             self.y_locator = locator
 
-    def set_major_formatter(self, locator: Locator, axis: str) -> None:
+    def set_major_formatter(self, formatter: Formatter, axis: str) -> None:
         if axis == 'x':
-            self.x_locator = locator
+            self.x_formatter = formatter
         elif axis == 'y':
-            self.y_locator = locator
+            self.y_formatter = formatter
 
     def plot(self, xvalues: ArrayLike, yvalues: ArrayLike, color: str = 'red',
              linewidth: int = 4) -> None:
@@ -248,6 +263,7 @@ class Figure(object):
         self.axes.append(axes)
 
         self._configure_locators()
+        self._configure_formatters()
         self._configure_grid_settings()
 
         if self.theme.grid_visibility:
