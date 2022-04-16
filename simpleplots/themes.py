@@ -18,7 +18,9 @@ class StandardTheme(Theme):
     figure_background_color = (255, 255, 255)
 
     spine_box_width_perc = 0.8
-    spine_box_height_perc = 0.8
+    spine_box_height_perc = 0.7
+    spine_box_add_hor_offset = 0.2
+    spine_box_add_ver_offset = 0.2
     spine_color = (0, 0, 0)
     spine_width = 4
 
