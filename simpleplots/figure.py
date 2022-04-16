@@ -13,13 +13,13 @@ __all__ = ('Figure')
 from .base import Theme, Axes, Size
 from .utils import (get_indices_of_values_in_list, smartrange, normalize_values,
                     get_font, choose_locator, choose_formatter)
-from .visuals import Spines, PointsGrid
+from .visuals import Spines, PointsGrid, CustomImageDraw
 from .themes import StandardTheme
 from .ticker import Locator, Formatter
 
 from numpy.typing import ArrayLike
 
-from PIL import Image, ImageDraw
+from PIL import Image
 import numpy as np
 import gc
 
@@ -68,13 +68,13 @@ class Figure(object):
         self.y_formatter = None
 
     def _create_empty_image(self, _mode: str = 'RGB') -> None:
-        """Creates an empty image and initializes ImageDraw."""
+        """Creates an empty image and initializes CustomImageDraw."""
         if self.img:
             self.img.close()
 
         self.img = Image.new(_mode, (self.width, self.height),
                              color=self.theme.figure_background_color)
-        self.draw = ImageDraw.Draw(self.img)
+        self.draw = CustomImageDraw(self.img)
 
     def _draw_spines(self) -> None:
         """Draws graph spines."""
@@ -197,9 +197,9 @@ class Figure(object):
 
             coords = self.grid.get_x_tick_label_coords(x_index, label, tick_font)
 
-            if not self.x_formatter.rotation:
-                self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
-                               fill=self.theme.tick_label_color)
+            self.draw.rtext(xy=coords, text=label, font=tick_font,
+                            anchor="mm", fill=self.theme.tick_label_color,
+                            rotation=self.x_formatter.rotation)
 
         for y_index in self.grid.y_major_ticks:
             label = self.y_formatter(self.grid.yvalues[y_index])
@@ -208,9 +208,9 @@ class Figure(object):
 
             coords = self.grid.get_y_tick_label_coords(y_index, label, tick_font)
 
-            if not self.y_formatter.rotation:
-                self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
-                               fill=self.theme.tick_label_color)
+            self.draw.rtext(xy=coords, text=label, font=tick_font,
+                            anchor="mm", fill=self.theme.tick_label_color,
+                            rotation=self.y_formatter.rotation)
 
     def _draw_axes(self, axes: Axes) -> None:
         """Draw axes points and connection lines."""
