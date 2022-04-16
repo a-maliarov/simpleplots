@@ -3,6 +3,7 @@
 from simpleplots import Figure
 import platform
 import unittest
+import numpy as np
 import os
 
 #--------------------------------------------------------------------------------------------------------------
@@ -88,6 +89,43 @@ class TestFigure(unittest.TestCase):
         fig.close()
 
         expected = [144.0, 75.6]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_without_gaps(self):
+        dmin = np.datetime64('2022-01')
+        dmax = np.datetime64('2022-05')
+        delta = np.timedelta64(1, 'M')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [fig.grid.cell_width, fig.grid.cell_height]
+        fig.close()
+
+        expected = [8.0, 11.8125]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_wit_gaps(self):
+        dmin = np.datetime64('2022-01')
+        dmax = np.datetime64('2022-05')
+        delta = np.timedelta64(1, 'M')
+        times1 = np.arange(dmin, dmax, delta)
+
+        dmin = np.datetime64('2022-08-01')
+        dmax = np.datetime64('2022-08-30')
+        delta = np.timedelta64(1, 'D')
+        times2 = np.arange(dmin, dmax, delta)
+
+        times = np.concatenate([times1, times2])
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [fig.grid.cell_width, fig.grid.cell_height]
+        fig.close()
+
+        expected = [3.0, 11.8125]
         self.assertListEqual(expected, to_test)
 
     def test_save(self):
