@@ -162,6 +162,8 @@ class AutoLocator(Locator):
     def tick_values(self, vmin, vmax):
         if vmax < vmin:
             vmin, vmax = vmax, vmin
+        elif vmin == vmax:
+            return [vmin]
 
         locs = self._raw_ticks(vmin, vmax)
         return locs

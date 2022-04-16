@@ -367,6 +367,8 @@ class AutoDateLocator(DateLocator):
                           range(0, 24), range(0, 60), range(0, 60), None]
 
     def tick_values(self, vmin, vmax):
+        if vmin == vmax:
+            return [vmin]
         return self.get_locator(vmin, vmax).tick_values(vmin, vmax)
 
     def get_locator(self, dmin, dmax):
