@@ -26,6 +26,7 @@ class CustomImageDraw(ImageDraw.ImageDraw):
         super().__init__(*args, **kwargs)
 
     def rtext(self, *args, **kwargs):
+        """Allows drawing rotated text."""
         rotation = kwargs.pop('rotation')
 
         if not rotation:
@@ -44,8 +45,8 @@ class CustomImageDraw(ImageDraw.ImageDraw):
             draw.text((0, 0), text=text, font=font, fill=(*fill, 255))
             mask = mask.rotate(rotation, expand=True)
 
-            x = int(xy[0]) - mask.size[0]
-            y = int(xy[1])
+            x = int(xy[0]) - mask.size[0] + int(mask.size[0] * 0.1)
+            y = int(xy[1]) - int(mask.size[1] * 0.1)
             self._image.paste(mask, (x, y), mask)
 
 #-------------------------------------------------------------------------------
@@ -67,6 +68,9 @@ class Spines(object):
         self.height = self.img_height * self.theme.spine_box_height_perc
         self.horizontal_offset = (self.img_width - self.width) / 2
         self.vertical_offset = (self.img_height - self.height) / 2
+
+        self.horizontal_offset *= 1 + self.theme.spine_box_add_hor_offset
+        self.vertical_offset /= 1 + self.theme.spine_box_add_ver_offset
 
     @property
     def left(self) -> Coords:
