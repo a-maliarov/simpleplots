@@ -4,5 +4,6 @@ from .utils import TestUtils
 from .ticker import TestTicker
 from .visuals import TestVisuals
 from .figure import TestFigure
+from .dates import TestDates
 
 #-----------------------------------------------------------------------------
