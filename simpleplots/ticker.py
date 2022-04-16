@@ -13,7 +13,7 @@ matplotlib's original code!
 
 """
 
-__all__ = ('Locator', 'AutoLocator')
+__all__ = ('Locator', 'AutoLocator', 'NullFormatter', 'AutoFormatter')
 
 from decimal import *
 import numpy as np
@@ -69,6 +69,25 @@ class EdgeInteger(object):
         if self.closeto(m / self.step, 0):
             return d
         return d + 1
+
+#-------------------------------------------------------------------------------
+
+class Formatter(object):
+
+    def __call__(self, value):
+        """Return the label for the given tick value."""
+        raise NotImplementedError('Derived must override')
+
+class NullFormatter(Formatter):
+
+    def __call__(self, value):
+        """Always return the empty string."""
+        return ''
+
+class AutoFormatter(Formatter):
+
+    def __call__(self, value):
+        return str(value)
 
 #-------------------------------------------------------------------------------
 
