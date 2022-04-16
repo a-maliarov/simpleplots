@@ -131,7 +131,7 @@ class Figure(object):
         xvmin, xvmax = np.min(x_major_ticks), np.max(x_major_ticks)
 
         self.grid.xvalues = smartrange(xvmin, xvmax, xvalues)
-        self.grid.cell_width = self.grid.width / (len(self.grid.xvalues) - 1)
+        self.grid.cell_width = self.grid.width / max(len(self.grid.xvalues) - 1, 1)
         self.grid.x_major_ticks = get_indices_of_values_in_list(x_major_ticks,
                                                                 self.grid.xvalues)
 
@@ -142,7 +142,7 @@ class Figure(object):
         yvmin, yvmax = np.min(y_major_ticks), np.max(y_major_ticks)
 
         self.grid.yvalues = smartrange(yvmin, yvmax, yvalues)
-        self.grid.cell_height = self.grid.height / (len(self.grid.yvalues) - 1)
+        self.grid.cell_height = self.grid.height / max(len(self.grid.yvalues) - 1, 1)
         self.grid.y_major_ticks = get_indices_of_values_in_list(y_major_ticks,
                                                                 self.grid.yvalues)
 
