@@ -73,6 +73,7 @@ class EdgeInteger(object):
 #-------------------------------------------------------------------------------
 
 class Formatter(object):
+    rotation = 0
 
     def __call__(self, value):
         """Return the label for the given tick value."""

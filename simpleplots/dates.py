@@ -171,17 +171,19 @@ class rrulewrapper:
 
 class DateFormatter(Formatter):
 
-    def __init__(self, fmt, tz=None):
+    def __init__(self, fmt, tz=None, rotation=None):
         self.fmt = fmt
         self.tz = _get_tzinfo(tz)
+        self.rotation = rotation
 
     def __call__(self, value):
         return value.astype(datetime.datetime).strftime(self.fmt)
 
 class AutoDateFormatter(Formatter):
 
-    def __init__(self, defaultfmt='%Y-%m-%d'):
+    def __init__(self, defaultfmt='%Y-%m-%d', rotation=None):
         self.defaultfmt = defaultfmt
+        self.rotation = rotation
 
     def __call__(self, value):
         formatter = DateFormatter(self.defaultfmt)

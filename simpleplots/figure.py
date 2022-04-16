@@ -197,8 +197,9 @@ class Figure(object):
 
             coords = self.grid.get_x_tick_label_coords(x_index, label, tick_font)
 
-            self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
-                           fill=self.theme.tick_label_color)
+            if not self.x_formatter.rotation:
+                self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
+                               fill=self.theme.tick_label_color)
 
         for y_index in self.grid.y_major_ticks:
             label = self.y_formatter(self.grid.yvalues[y_index])
@@ -207,8 +208,9 @@ class Figure(object):
 
             coords = self.grid.get_y_tick_label_coords(y_index, label, tick_font)
 
-            self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
-                           fill=self.theme.tick_label_color)
+            if not self.y_formatter.rotation:
+                self.draw.text(xy=coords, text=label, font=tick_font, anchor="mm",
+                               fill=self.theme.tick_label_color)
 
     def _draw_axes(self, axes: Axes) -> None:
         """Draw axes points and connection lines."""
