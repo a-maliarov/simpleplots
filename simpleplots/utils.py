@@ -13,8 +13,8 @@ __all__ = ('get_font', 'get_text_dimensions', 'normalize_float', 'find_gcd',
            'get_indices_of_values_in_list', 'choose_locator')
 
 from .base import Theme, Size
-from .ticker import Locator, AutoLocator
-from .dates import AutoDateLocator
+from .ticker import Locator, AutoLocator, AutoFormatter
+from .dates import AutoDateLocator, AutoDateFormatter
 
 from typing import List, Iterable
 from numpy.typing import ArrayLike
@@ -139,6 +139,15 @@ def choose_locator(values: np.ndarray) -> Locator:
         return AutoLocator()
     elif DATE_DTYPE in str(values.dtype):
         return AutoDateLocator()
+    else:
+        raise TypeError('unknown input datatype')
+
+def choose_formatter(values: np.ndarray) -> Locator:
+    """Returns label formatter based on datatype."""
+    if values.dtype in INT_DTYPES or values.dtype in FLOAT_DTYPES:
+        return AutoFormatter()
+    elif DATE_DTYPE in str(values.dtype):
+        return AutoDateFormatter()
     else:
         raise TypeError('unknown input datatype')
 
