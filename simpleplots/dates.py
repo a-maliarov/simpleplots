@@ -181,12 +181,12 @@ class DateFormatter(Formatter):
 
 class AutoDateFormatter(Formatter):
 
-    def __init__(self, defaultfmt='%Y-%m-%d', rotation=None):
+    def __init__(self, defaultfmt='%Y-%m-%d', rotation=45):
         self.defaultfmt = defaultfmt
         self.rotation = rotation
 
     def __call__(self, value):
-        formatter = DateFormatter(self.defaultfmt)
+        formatter = DateFormatter(self.defaultfmt, rotation=self.rotation)
         return formatter(value)
 
 #-------------------------------------------------------------------------------
