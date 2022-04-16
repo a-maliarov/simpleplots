@@ -13,9 +13,10 @@ matplotlib's original code!
 """
 
 __all__ = ('AutoDateLocator', 'YearLocator', 'MonthLocator', 'WeekdayLocator',
-           'DayLocator', 'HourLocator', 'MinuteLocator', 'SecondLocator')
+           'DayLocator', 'HourLocator', 'MinuteLocator', 'SecondLocator',
+           'DateFormatter', 'AutoDateFormatter')
 
-from .ticker import Locator, EdgeInteger
+from .ticker import Locator, EdgeInteger, Formatter
 
 from dateutil.relativedelta import relativedelta
 import numpy as np
@@ -165,6 +166,26 @@ class rrulewrapper:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
+
+#-------------------------------------------------------------------------------
+
+class DateFormatter(Formatter):
+
+    def __init__(self, fmt, tz=None):
+        self.fmt = fmt
+        self.tz = _get_tzinfo(tz)
+
+    def __call__(self, value):
+        return value.astype(datetime.datetime).strftime(self.fmt)
+
+class AutoDateFormatter(Formatter):
+
+    def __init__(self, defaultfmt='%Y-%m-%d'):
+        self.defaultfmt = defaultfmt
+
+    def __call__(self, value):
+        formatter = DateFormatter(self.defaultfmt)
+        return formatter(value)
 
 #-------------------------------------------------------------------------------
 
