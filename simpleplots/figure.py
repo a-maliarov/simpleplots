@@ -15,6 +15,7 @@ from .utils import (get_indices_of_values_in_list, smartrange, normalize_values,
                     get_font, choose_locator)
 from .visuals import Spines, PointsGrid
 from .themes import StandardTheme
+from .ticker import Locator
 
 from numpy.typing import ArrayLike
 
@@ -59,8 +60,12 @@ class Figure(object):
 
         self.spines = Spines(self.width, self.height, self.theme)
         self.grid = PointsGrid(self.spines, self.theme)
+
         self.x_locator = None
         self.y_locator = None
+
+        self.x_formatter = None
+        self.y_formatter = None
 
     def _create_empty_image(self, _mode: str = 'RGB') -> None:
         """Creates an empty image and initializes ImageDraw."""
@@ -212,18 +217,17 @@ class Figure(object):
         points = [tuple(p) for p in points]
         self.draw.line(points, width=axes.linewidth, fill=axes.color)
 
-    def title(self, text: str) -> None:
-        """
-        Sets graph's title using given text string. The position of the title
-        is located on top of spines box, in the middle of the grid.
+    def set_major_locator(self, locator: Locator, axis: str) -> None:
+        if axis == 'x':
+            self.x_locator = locator
+        elif axis == 'y':
+            self.y_locator = locator
 
-        """
-
-        title_font = get_font('title', self.theme, self.width)
-        coords = self.grid.get_title_coords(text, title_font)
-
-        self.draw.text(xy=coords, text=text, font=title_font, anchor="mm",
-                       fill=self.theme.title_color)
+    def set_major_formatter(self, locator: Locator, axis: str) -> None:
+        if axis == 'x':
+            self.x_locator = locator
+        elif axis == 'y':
+            self.y_locator = locator
 
     def plot(self, xvalues: ArrayLike, yvalues: ArrayLike, color: str = 'red',
              linewidth: int = 4) -> None:
@@ -280,5 +284,18 @@ class Figure(object):
         """Explicitly closes the image."""
         self.img.close()
         gc.collect()
+
+    def title(self, text: str) -> None:
+        """
+        Sets graph's title using given text string. The position of the title
+        is located on top of spines box, in the middle of the grid.
+
+        """
+
+        title_font = get_font('title', self.theme, self.width)
+        coords = self.grid.get_title_coords(text, title_font)
+
+        self.draw.text(xy=coords, text=text, font=title_font, anchor="mm",
+                       fill=self.theme.title_color)
 
 #-------------------------------------------------------------------------------
