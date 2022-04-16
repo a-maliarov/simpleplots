@@ -15,8 +15,38 @@ from .base import Coords, Theme, Point
 from .utils import get_text_dimensions
 
 from numbers import Number
-from PIL import ImageFont
+from PIL import Image, ImageFont, ImageDraw
 from typing import List
+
+#-------------------------------------------------------------------------------
+
+class CustomImageDraw(ImageDraw.ImageDraw):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def rtext(self, *args, **kwargs):
+        rotation = kwargs.pop('rotation')
+
+        if not rotation:
+            self.text(*args, **kwargs)
+
+        else:
+            xy = kwargs.pop('xy')
+            text = kwargs.pop('text')
+            font = kwargs.pop('font')
+            fill = kwargs.pop('fill')
+
+            text_width, text_height = get_text_dimensions(text, font)
+
+            mask = Image.new('RGBA', (text_width, text_height), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(mask)
+            draw.text((0, 0), text=text, font=font, fill=(*fill, 255))
+            mask = mask.rotate(rotation, expand=True)
+
+            x = int(xy[0]) - mask.size[0]
+            y = int(xy[1])
+            self._image.paste(mask, (x, y), mask)
 
 #-------------------------------------------------------------------------------
 
