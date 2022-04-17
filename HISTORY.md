@@ -15,3 +15,7 @@
   3. Minor memory consumption optimization.
 + **Version 0.5.1**:
   1. Fixed minor bug with small scale integers in `frange`.
++ **Version 0.6.0**:
+  1. Add the ability to plot dates.
+  2. Add the ability to edit locators.
+  3. Add the ability to edit formatters.
