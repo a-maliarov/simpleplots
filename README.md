@@ -36,11 +36,64 @@ The library also supports plotting multiple axes within one figure.
 ```python
 from simpleplots import Figure
 
+# Create a figure
 fig = Figure()
+
+# Plot data
 fig.plot([2, 3, 4], [1, 4.3, 6], color='red', linewidth=7)
-fig.plot([1, 3.5, 7], [2, 3, 5], color='blue', linewidth=7)
+fig.plot([1, 3.5, 7], [2, 3, 5], color='blue', linewidth=10)
+
+# Save the image (automatically closes the figure)
 fig.save('graph.png')
 ```
 
-## Additional
-+ simpleplots is currently in developement.
+Plotting dates:
+```python
+from simpleplots import Figure
+from datetime import datetime
+import numpy as np
+
+# Create the data to be plotted
+start, end = np.datetime64('2022-01-01'), np.datetime64('2022-02-01')
+times = np.arange(start, end, np.timedelta64(1, 'D'))
+values = np.random.randn(len(times))
+
+# Create a figure
+fig = Figure()
+
+# Plot data
+fig.plot(times, values, color='red', linewidth=7)
+
+# Save the image (automatically closes the figure)
+fig.save('graph.png')
+```
+
+Editing locators and formatters:
+```python
+from simpleplots import Figure
+from simpleplots.dates import DateFormatter, HourLocator
+from datetime import datetime
+import numpy as np
+
+# Create the data to be plotted
+start, end = np.datetime64('2022-01-01 01'), np.datetime64('2022-01-01 23')
+times = np.arange(start, end, np.timedelta64(1, 'h'))
+values = np.random.randn(len(times))
+
+# Create a figure
+fig = Figure()
+
+# Create and assign locator
+locator = HourLocator()
+fig.set_major_locator(locator, axis='x')
+
+# Create and assign formatter
+formatter = DateFormatter('%H:%M', rotation=45)
+fig.set_major_formatter(formatter, axis='x')
+
+# Plot data
+fig.plot(times, values, color='red', linewidth=7)
+
+# Save the image (automatically closes the figure)
+fig.save('graph.png')
+```
