@@ -21,3 +21,5 @@
   3. Add the ability to edit formatters.
 + **Version 0.6.1**:
   1. Fix smart range for dates.
++ **Version 0.6.4**:
+  1. Fix issue with dates and datetimes
