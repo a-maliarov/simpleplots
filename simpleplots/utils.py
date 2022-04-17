@@ -21,6 +21,7 @@ from numpy.typing import ArrayLike
 from numbers import Number
 from PIL import ImageFont
 
+from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta
 from functools import reduce
 from decimal import *
@@ -170,6 +171,65 @@ def frange(start: float, stop: float, step: float = None) -> Iterable[float]:
 
 #-------------------------------------------------------------------------------
 
+def find_min_timedelta(values: np.ndarray) -> dict:
+    """Given an array of dates, finds the minimum timedelta parameters."""
+    datetime_values = [d.astype(datetime) for d in values]
+
+    params = {
+        'seconds': 0,
+        'minutes': 0,
+        'hours': 0,
+        'days': 0,
+        'months': 0,
+        'years': 0
+    }
+
+    changes = {
+        'seconds': 0,
+        'minutes': 0,
+        'hours': 0,
+        'days': 0,
+        'months': 0,
+        'years': 0
+    }
+
+    if (any(d.second for d in datetime_values) and not
+        all(d.second == datetime_values[0].second for d in datetime_values)):
+        changes['seconds'] = 1
+
+    if (any(d.minute for d in datetime_values) and not
+        all(d.minute == datetime_values[0].minute for d in datetime_values)):
+        changes['minutes'] = 1
+
+    if (any(d.hour for d in datetime_values) and not
+        all(d.hour == datetime_values[0].hour for d in datetime_values)):
+        changes['hours'] = 1
+
+    if (any(d.day for d in datetime_values) and not
+        all(d.day == datetime_values[0].day for d in datetime_values)):
+        changes['days'] = 1
+
+    if (any(d.month for d in datetime_values) and not
+        all(d.month == datetime_values[0].month for d in datetime_values)):
+        changes['months'] = 1
+
+    if (any(d.year for d in datetime_values) and not
+        all(d.year == datetime_values[0].year for d in datetime_values)):
+        changes['years'] = 1
+
+    if changes['years'] or changes['months']:
+        params['days'] = 1
+    elif changes['days']:
+        params['hours'] = 1
+    elif changes['hours']:
+        params['minutes'] = 1
+    elif changes['minutes']:
+        params['seconds'] = 1
+
+    return params
+
+#-------------------------------------------------------------------------------
+
 def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndarray:
     """Fills gaps between vmin and vmax based on input type."""
 
@@ -197,33 +257,11 @@ def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndar
             return np.asarray([i for i in frange(vmin, vmax, step)])
 
     elif DATE_DTYPE in str(origin_values.dtype):
+        params = find_min_timedelta(origin_values)
         dmin, dmax = np.min(origin_values), np.max(origin_values)
-        datetime_values = [d.astype(datetime) for d in origin_values]
-
-        params = {
-            'seconds': 0,
-            'minutes': 0,
-            'hours': 0,
-            'days': 1
-        }
-
-        if (any(d.second for d in datetime_values) and not
-            all(d.second == datetime_values[0].second for d in datetime_values)):
-            params['seconds'] = 1
-            params['days'] = 0
-
-        elif (any(d.minute for d in datetime_values) and not
-            all(d.minute == datetime_values[0].minute for d in datetime_values)):
-            params['minutes'] = 1
-            params['days'] = 0
-
-        elif (any(d.hour for d in datetime_values) and not
-            all(d.hour == datetime_values[0].hour for d in datetime_values)):
-            params['hours'] = 1
-            params['days'] = 0
-
-        values = np.arange(dmin, dmax, timedelta(**params), dtype='datetime64[s]')
+        values = np.arange(dmin, dmax, relativedelta(**params), dtype='datetime64[s]')
         values = np.append(values, dmax)
+
         return values
 
 #-------------------------------------------------------------------------------
