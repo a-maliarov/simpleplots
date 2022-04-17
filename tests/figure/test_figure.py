@@ -106,7 +106,7 @@ class TestFigure(unittest.TestCase):
         expected = [8.0, 11.8125]
         self.assertListEqual(expected, to_test)
 
-    def test_plot_dates_wit_gaps(self):
+    def test_plot_dates_with_gaps(self):
         dmin = np.datetime64('2022-01')
         dmax = np.datetime64('2022-05')
         delta = np.timedelta64(1, 'M')
