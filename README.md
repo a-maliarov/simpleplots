@@ -47,7 +47,7 @@ fig.plot([1, 3.5, 7], [2, 3, 5], color='blue', linewidth=10)
 fig.save('graph.png')
 ```
 
-Plotting dates:
+Plotting dates (not yet optimized, uses more memory than matplotlib):
 ```python
 from simpleplots import Figure
 from datetime import datetime
@@ -68,7 +68,7 @@ fig.plot(times, values, color='red', linewidth=7)
 fig.save('graph.png')
 ```
 
-Editing locators and formatters:
+Editing locators and formatters (not yet optimized, uses more memory than matplotlib):
 ```python
 from simpleplots import Figure
 from simpleplots.dates import DateFormatter, HourLocator
