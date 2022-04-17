@@ -175,15 +175,6 @@ def find_min_timedelta(values: np.ndarray) -> dict:
     """Given an array of dates, finds the minimum timedelta parameters."""
     datetime_values = [d.astype(datetime) for d in values]
 
-    params = {
-        'seconds': 0,
-        'minutes': 0,
-        'hours': 0,
-        'days': 0,
-        'months': 0,
-        'years': 0
-    }
-
     changes = {
         'seconds': 0,
         'minutes': 0,
@@ -218,15 +209,13 @@ def find_min_timedelta(values: np.ndarray) -> dict:
         changes['years'] = 1
 
     if changes['years'] or changes['months']:
-        params['days'] = 1
+        return np.timedelta64(1, 'D')
     elif changes['days']:
-        params['hours'] = 1
+        return np.timedelta64(1, 'h')
     elif changes['hours']:
-        params['minutes'] = 1
+        return np.timedelta64(1, 'm')
     elif changes['minutes']:
-        params['seconds'] = 1
-
-    return params
+        return np.timedelta64(1, 's')
 
 #-------------------------------------------------------------------------------
 
@@ -257,13 +246,13 @@ def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndar
             return np.asarray([i for i in frange(vmin, vmax, step)])
 
     elif DATE_DTYPE in str(origin_values.dtype):
-        params = find_min_timedelta(origin_values)
+        delta = find_min_timedelta(origin_values)
         dmin, dmax = np.min(origin_values), np.max(origin_values)
 
         if np.datetime64(vmax) > dmax:
             dmax = np.datetime64(vmax)
 
-        values = np.arange(dmin, dmax, relativedelta(**params), dtype='datetime64[s]')
+        values = np.arange(dmin, dmax, delta, dtype='datetime64[s]')
         values = np.append(values, dmax)
 
         return values
