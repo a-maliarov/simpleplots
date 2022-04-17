@@ -207,15 +207,18 @@ def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndar
             'days': 1
         }
 
-        if any([d.second for d in datetime_values]):
+        if (any(d.second for d in datetime_values) and not
+            all(d.second == datetime_values[0].second for d in datetime_values)):
             params['seconds'] = 1
             params['days'] = 0
 
-        elif any([d.minute for d in datetime_values]):
+        elif (any(d.minute for d in datetime_values) and not
+            all(d.minute == datetime_values[0].minute for d in datetime_values)):
             params['minutes'] = 1
             params['days'] = 0
 
-        elif any([d.hour for d in datetime_values]):
+        elif (any(d.hour for d in datetime_values) and not
+            all(d.hour == datetime_values[0].hour for d in datetime_values)):
             params['hours'] = 1
             params['days'] = 0
 
