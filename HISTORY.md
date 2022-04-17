@@ -19,3 +19,5 @@
   1. Add the ability to plot dates.
   2. Add the ability to edit locators.
   3. Add the ability to edit formatters.
++ **Version 0.6.1**:
+  1. Fix smart range for dates.
