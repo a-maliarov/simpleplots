@@ -259,6 +259,10 @@ def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndar
     elif DATE_DTYPE in str(origin_values.dtype):
         params = find_min_timedelta(origin_values)
         dmin, dmax = np.min(origin_values), np.max(origin_values)
+
+        if np.datetime64(vmax) > dmax:
+            dmax = np.datetime64(vmax)
+
         values = np.arange(dmin, dmax, relativedelta(**params), dtype='datetime64[s]')
         values = np.append(values, dmax)
 
