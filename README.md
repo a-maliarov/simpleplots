@@ -54,7 +54,7 @@ from datetime import datetime
 import numpy as np
 
 # Create the data to be plotted
-start, end = np.datetime64('2022-01-01'), np.datetime64('2022-02-01')
+start, end = np.datetime64('2022-01-01'), np.datetime64('2022-01-20')
 times = np.arange(start, end, np.timedelta64(1, 'D'))
 values = np.random.randn(len(times))
 
