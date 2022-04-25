@@ -11,12 +11,13 @@ between axes' values and image coordinates.
 
 __all__ = ('Spines', 'PointsGrid')
 
-from .base import Coords, Theme, Point
-from .utils import get_text_dimensions
+from .base import Coords, Theme, Point, Axes
+from .utils import (get_text_dimensions, get_indices_of_values_in_list)
 
 from numbers import Number
 from PIL import Image, ImageFont, ImageDraw
 from typing import List
+import numpy as np
 
 #-------------------------------------------------------------------------------
 
@@ -227,5 +228,13 @@ class PointsGrid(object):
         x_coords = self.get_x_point_coords(x_index)
         y_coords = self.get_y_point_coords(y_index)
         return Point(x_coords, y_coords)
+
+    def get_axes_points_coords(self, axes: Axes) -> List[Point]:
+        """Get coordinates of all points within axes."""
+        px = get_indices_of_values_in_list(axes.xvalues, self.xvalues)
+        py = get_indices_of_values_in_list(axes.yvalues, self.yvalues)
+
+        xy_indices = np.dstack(np.asarray([px, py]))[0]
+        return np.asarray([self.get_point_coords(x, y) for x, y in xy_indices])
 
 #-------------------------------------------------------------------------------

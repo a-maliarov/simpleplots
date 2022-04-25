@@ -214,11 +214,7 @@ class Figure(object):
 
     def _draw_axes(self, axes: Axes) -> None:
         """Draw axes points and connection lines."""
-        px = get_indices_of_values_in_list(axes.xvalues, self.grid.xvalues)
-        py = get_indices_of_values_in_list(axes.yvalues, self.grid.yvalues)
-
-        xy_indices = np.dstack(np.asarray([px, py]))[0]
-        points = np.asarray([self.grid.get_point_coords(x, y) for x, y in xy_indices])
+        points = self.grid.get_axes_points_coords(axes)
 
         for point in points:
             self.draw.ellipse(
