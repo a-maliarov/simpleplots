@@ -68,11 +68,12 @@ class Theme:
 class Axes():
     xvalues: np.ndarray
     yvalues: np.ndarray
-    color: str = 'red'
-    linewidth: int = 4
-    linestyle: str = 'solid'
-    marker: str = 'o'
-    markersize: int = 4
+    color: str
+    linewidth: int
+    linestyle: str
+    marker: str
+    markersize: int
+    label: str
     points: np.ndarray = field(init=False)
 
     def __post_init__(self):

@@ -246,7 +246,7 @@ class Figure(object):
 
     def plot(self, xvalues: ArrayLike, yvalues: ArrayLike, color: str = 'red',
              linewidth: int = 4, linestyle: str = 'solid', marker: str = 'o',
-             markersize: int = 4) -> None:
+             markersize: int = 4, label: str = 'line') -> None:
         """
         Plot y versus x as lines and/or markers on the image. Can be called
         multiple times from the same figure to include several properly scaled
@@ -260,9 +260,8 @@ class Figure(object):
         xvalues = normalize_values(xvalues)
         yvalues = normalize_values(yvalues)
 
-        axes = Axes(
-            xvalues, yvalues, color, linewidth, linestyle, marker, markersize
-        )
+        axes = Axes(xvalues, yvalues, color, linewidth, linestyle, marker,
+                    markersize, label)
         self.axes.append(axes)
 
         self._configure_locators()
