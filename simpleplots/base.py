@@ -70,6 +70,9 @@ class Axes():
     yvalues: np.ndarray
     color: str = 'red'
     linewidth: int = 4
+    linestyle: str = 'solid'
+    marker: str = 'o'
+    markersize: int = 4
     points: np.ndarray = field(init=False)
 
     def __post_init__(self):

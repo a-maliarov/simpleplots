@@ -217,18 +217,20 @@ class Figure(object):
         points = self.grid.get_axes_points_coords(axes)
 
         for point in points:
-            self.draw.ellipse(
-                (
-                    point[0] - self.theme.point_radius,
-                    point[1] - self.theme.point_radius,
-                    point[0] + self.theme.point_radius,
-                    point[1] + self.theme.point_radius
-                ),
-                fill=axes.color
-            )
+            if axes.marker == 'o':
+                self.draw.ellipse(
+                    (
+                        point[0] - axes.markersize,
+                        point[1] - axes.markersize,
+                        point[0] + axes.markersize,
+                        point[1] + axes.markersize
+                    ),
+                    fill=axes.color
+                )
 
         points = [tuple(p) for p in points]
-        self.draw.line(points, width=axes.linewidth, fill=axes.color)
+        if axes.linestyle == 'solid':
+            self.draw.line(points, width=axes.linewidth, fill=axes.color)
 
     def set_major_locator(self, locator: Locator, axis: str) -> None:
         if axis == 'x':
@@ -243,7 +245,8 @@ class Figure(object):
             self.y_formatter = formatter
 
     def plot(self, xvalues: ArrayLike, yvalues: ArrayLike, color: str = 'red',
-             linewidth: int = 4) -> None:
+             linewidth: int = 4, linestyle: str = 'solid', marker: str = 'o',
+             markersize: int = 4) -> None:
         """
         Plot y versus x as lines and/or markers on the image. Can be called
         multiple times from the same figure to include several properly scaled
@@ -257,7 +260,9 @@ class Figure(object):
         xvalues = normalize_values(xvalues)
         yvalues = normalize_values(yvalues)
 
-        axes = Axes(xvalues, yvalues, color, linewidth)
+        axes = Axes(
+            xvalues, yvalues, color, linewidth, linestyle, marker, markersize
+        )
         self.axes.append(axes)
 
         self._configure_locators()
