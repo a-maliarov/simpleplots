@@ -38,8 +38,6 @@ class StandardTheme(Theme):
     tick_label_size_perc = 0.016
     tick_label_color = (0, 0, 0)
 
-    point_radius = 4
-
     title_font = 'arial.ttf'
     title_size_perc = 0.033
     title_color = (0, 0, 0)
