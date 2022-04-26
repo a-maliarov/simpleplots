@@ -98,5 +98,24 @@ fig.plot(times, values, color='red', linewidth=7)
 fig.save('graph.png')
 ```
 
+Show legend and add title:
+```python
+from simpleplots import Figure
+
+# Create a figure
+fig = Figure()
+
+# Plot data
+fig.plot([2, 3, 4], [1, 4.3, 6], color='red', label='line1')
+fig.plot([1, 3.5, 7], [2, 3, 5], color='blue', label='line2')
+
+# Show legend
+fig.title('Some data')
+fig.legend()
+
+# Save the image (automatically closes the figure)
+fig.save('graph.png')
+```
+
 ## Additional
 + *simpleplots* is a demand-driven library. In case you want to use *simpleplots*, but can't find a locator, formatter or functionality you need - leave a message by creating an issue.
