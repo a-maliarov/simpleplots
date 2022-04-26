@@ -23,3 +23,5 @@
   1. Fix smart range for dates.
 + **Version 0.6.4**:
   1. Fix issue with dates and datetimes
++ **Version 0.7.0**:
+  1. Add legend functionality
