@@ -42,4 +42,8 @@ class StandardTheme(Theme):
     title_size_perc = 0.033
     title_color = (0, 0, 0)
 
+    legend_font = 'arial.ttf'
+    legend_size_perc = 0.02
+    legend_color = (0, 0, 0)
+
 #-------------------------------------------------------------------------------

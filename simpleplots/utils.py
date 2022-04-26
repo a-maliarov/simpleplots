@@ -57,6 +57,12 @@ def get_font(type_: str, theme: Theme, image_width: int) -> ImageFont:
             int(image_width * theme.title_size_perc)
         )
 
+    elif type_ == 'legend':
+        return ImageFont.truetype(
+            os.path.join(fonts_folder, theme.legend_font),
+            int(image_width * theme.legend_size_perc)
+        )
+
 def get_text_dimensions(text_string: str, font: ImageFont) -> Size:
     """Calculates size of a given text string using given font."""
     ascent, descent = font.getmetrics()

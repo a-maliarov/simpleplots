@@ -21,6 +21,17 @@ import numpy as np
 
 #-------------------------------------------------------------------------------
 
+def _point_in_bbox(point: Point, bbox: Coords) -> bool:
+    if (bbox.x0 <= point.x and point.x <= bbox.x1 and
+        bbox.y0 <= point.y and point.y <= bbox.y1):
+
+        return True
+
+    else:
+        return False
+
+#-------------------------------------------------------------------------------
+
 class CustomImageDraw(ImageDraw.ImageDraw):
 
     def __init__(self, *args, **kwargs):
@@ -236,5 +247,56 @@ class PointsGrid(object):
 
         xy_indices = np.dstack(np.asarray([px, py]))[0]
         return np.asarray([self.get_point_coords(x, y) for x, y in xy_indices])
+
+    def get_legend_bbox(self, axes: List[Axes], font: ImageFont) -> dict:
+        """Returns coordinates of legend mask."""
+        priority = {
+            '00': 0, '10': 6, '20': 1,
+            '01': 4, '11': 8, '21': 5,
+            '02': 2, '12': 7, '22': 3
+        }
+
+        sections = [
+            {'anchor': 'la'}, {'anchor': 'ra'}, {'anchor': 'ld'},
+            {'anchor': 'rd'}, {'anchor': 'lm'}, {'anchor': 'rm'},
+            {'anchor': 'ma'}, {'anchor': 'md'}, {'anchor': 'mm'},
+        ]
+
+        for x in range(3):
+            for y in range(3):
+                w = (self.spines.width - self.horizontal_offset * 1.5)
+                h = (self.spines.height - self.vertical_offset * 1.5)
+
+                ow = self.spines.horizontal_offset + self.horizontal_offset * 0.75
+                oh = self.spines.vertical_offset + self.vertical_offset * 0.75
+
+                coords = Coords(
+                    x0 = ow + w / 3 * x,
+                    y0 = oh + h / 3 * y,
+                    x1 = ow + w / 3 * (x + 1),
+                    y1 = oh + h / 3 * (y + 1)
+                )
+
+                point = Point(
+                    x = ow + w / 2 * x,
+                    y = oh + h / 2 * y
+                )
+
+                sections[priority[f'{x}{y}']]['bbox'] = coords
+                sections[priority[f'{x}{y}']]['point'] = point
+
+        pts = [self.get_axes_points_coords(ax) for ax in axes]
+        points = np.concatenate(pts)
+
+        for p in points:
+            point = Point(p[0], p[1])
+            for sk, sv in enumerate(sections):
+                if 'hits' not in sections[sk]:
+                    sections[sk]['hits'] = 0
+                if _point_in_bbox(point, sv['bbox']):
+                    sections[sk]['hits'] += 1
+
+        section = sorted(sections, key=lambda d: d['hits'])[0]
+        return section
 
 #-------------------------------------------------------------------------------

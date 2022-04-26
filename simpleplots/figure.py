@@ -12,7 +12,7 @@ __all__ = ('Figure')
 
 from .base import Theme, Axes, Size
 from .utils import (get_indices_of_values_in_list, smartrange, normalize_values,
-                    get_font, choose_locator, choose_formatter)
+                    get_font, choose_locator, choose_formatter, get_text_dimensions)
 from .visuals import Spines, PointsGrid, CustomImageDraw
 from .themes import StandardTheme
 from .ticker import Locator, Formatter
@@ -315,5 +315,53 @@ class Figure(object):
 
         self.draw.text(xy=coords, text=text, font=title_font, anchor="mm",
                        fill=self.theme.title_color)
+
+    def legend(self, spacing: int = 4) -> None:
+        legend_font = get_font('legend', self.theme, self.width)
+        section = self.grid.get_legend_bbox(self.axes, legend_font)
+
+        labels = '\n'.join(['bbbb' + ax.label for ax in self.axes])
+        bbox = self.draw.multiline_textbbox(
+            xy=section['point'],
+            text=labels,
+            font=legend_font,
+            anchor=section['anchor'],
+            spacing=spacing
+        )
+
+        letter_size = get_text_dimensions('b', legend_font)
+        new_bbox = list(bbox)
+        new_bbox[0] -= letter_size[0] / 2
+        new_bbox[1] -= letter_size[1] / 2
+        new_bbox[2] += letter_size[0] / 2
+        new_bbox[3] += letter_size[1]
+
+        self.draw.rounded_rectangle(
+            xy=new_bbox,
+            radius=15,
+            fill=self.theme.figure_background_color,
+            outline=self.theme.grid_line_color,
+            width=self.theme.grid_line_width // 2
+        )
+
+        for i, axes in enumerate(self.axes):
+            line_coords = (
+                bbox[0],
+                bbox[1] + letter_size[1] / 2 + letter_size[1] * i + spacing * i,
+                bbox[0] + letter_size[0] * 3,
+                bbox[1] + letter_size[1] / 2 + letter_size[1] * i + spacing * i
+            )
+            self.draw.line(line_coords, width=axes.linewidth, fill=axes.color)
+
+            text_coords = (
+                bbox[0] + letter_size[0] * 4,
+                bbox[1] + letter_size[1] * i + spacing * i
+            )
+            self.draw.text(
+                xy=text_coords,
+                text=axes.label,
+                font=legend_font,
+                fill=self.theme.legend_color
+            )
 
 #-------------------------------------------------------------------------------
