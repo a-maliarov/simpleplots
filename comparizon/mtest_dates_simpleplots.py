@@ -27,10 +27,12 @@ for i in range(100):
     fig = Figure()
 
     xvalues, yvalues = get_random_values(1, 10000)
-    fig.plot(xvalues, yvalues, color='red', linewidth=5)
+    fig.plot(xvalues, yvalues, color='red', linewidth=5, label='line1')
 
     xvalues, yvalues = get_random_values(1, 10000)
-    fig.plot(xvalues, yvalues, color='blue', linewidth=5)
+    fig.plot(xvalues, yvalues, color='blue', linewidth=5, label='line1')
+
+    fig.legend()
 
     fig.save(f'{test_folder}/graph{i}.png')
 
