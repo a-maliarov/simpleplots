@@ -25,3 +25,5 @@
   1. Fix issue with dates and datetimes
 + **Version 0.7.0**:
   1. Add legend functionality
++ **Version 0.7.1**:
+  1. Add handler for single-value inputs
