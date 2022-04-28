@@ -161,47 +161,67 @@ class PointsGrid(object):
 
     def get_x_line_coords(self, x_index: int) -> Coords:
         """Get coordinates of internal grid vertical line."""
+        _x_offset = self.cell_width * x_index
+        if len(self.x_major_ticks) == 1:
+            _x_offset = self.cell_width * 0.5
+
         return Coords(
-            self.full_h_offset + self.cell_width * x_index,
+            self.full_h_offset + _x_offset,
             self.spines.vertical_offset,
-            self.full_h_offset + self.cell_width * x_index,
+            self.full_h_offset + _x_offset,
             self.full_v_offset + self.vertical_offset + self.height
         )
 
     def get_y_line_coords(self, y_index: int) -> Coords:
         """Get coordinates of internal grid horizontal line."""
+        _y_offset = self.cell_height * y_index
+        if len(self.y_major_ticks) == 1:
+            _y_offset = self.cell_height * 0.5
+
         return Coords(
             self.spines.horizontal_offset,
-            self.full_v_offset + self.height - self.cell_height * y_index,
+            self.full_v_offset + self.height - _y_offset,
             self.full_h_offset + self.horizontal_offset + self.width,
-            self.full_v_offset + self.height - self.cell_height * y_index
+            self.full_v_offset + self.height - _y_offset
         )
 
     def get_x_tick_coords(self, x_index: int) -> Coords:
         """Get coordinates of vertically oriented tick."""
+        _x_offset = self.cell_width * x_index
+        if len(self.x_major_ticks) == 1:
+            _x_offset = self.cell_width * 0.5
+
         return Coords(
-            self.full_h_offset + self.cell_width * x_index,
+            self.full_h_offset + _x_offset,
             self.full_v_offset + self.vertical_offset + self.height,
-            self.full_h_offset + self.cell_width * x_index,
+            self.full_h_offset + _x_offset,
             self.full_v_offset + self.vertical_offset + self.height + self.tick_length
         )
 
     def get_y_tick_coords(self, y_index: int) -> Coords:
         """Get coordinates of horizontally oriented tick."""
+        _y_offset = self.cell_height * y_index
+        if len(self.y_major_ticks) == 1:
+            _y_offset = self.cell_height * 0.5
+
         return Coords(
             self.spines.horizontal_offset - self.tick_length,
-            self.full_v_offset + self.height - self.cell_height * y_index,
+            self.full_v_offset + self.height - _y_offset,
             self.spines.horizontal_offset,
-            self.full_v_offset + self.height - self.cell_height * y_index
+            self.full_v_offset + self.height - _y_offset
         )
 
     def get_x_tick_label_coords(self, x_index: int, text: str,
                                 font: ImageFont) -> Point:
         """Get coordinates of X tick label."""
+        _x_offset = self.cell_width * x_index
+        if len(self.x_major_ticks) == 1:
+            _x_offset = self.cell_width * 0.5
+
         text_width, text_height = get_text_dimensions(text, font)
 
         return Point(
-            self.full_h_offset + self.cell_width * x_index,
+            self.full_h_offset + _x_offset,
             self.full_v_offset + self.vertical_offset + self.height \
                                         + self.tick_length * 2      \
                                         + text_height / 2,
@@ -210,11 +230,15 @@ class PointsGrid(object):
     def get_y_tick_label_coords(self, y_index: int, text: str,
                                 font: ImageFont) -> Point:
         """Get coordinates of Y tick label."""
+        _y_offset = self.cell_height * y_index
+        if len(self.y_major_ticks) == 1:
+            _y_offset = self.cell_height * 0.5
+
         text_width, text_height = get_text_dimensions(text, font)
 
         return Point(
             self.spines.horizontal_offset - self.tick_length * 2 - text_width / 2,
-            self.full_v_offset + self.height - self.cell_height * y_index,
+            self.full_v_offset + self.height - _y_offset,
         )
 
     def get_title_coords(self, text: str, font: ImageFont) -> Point:
@@ -228,11 +252,17 @@ class PointsGrid(object):
 
     def get_x_point_coords(self, x_index: int) -> Number:
         """Get coordinates of point on x-axis by X index."""
-        return self.full_h_offset + self.cell_width * x_index
+        _x_offset = self.cell_width * x_index
+        if len(self.x_major_ticks) == 1:
+            _x_offset = self.cell_width * 0.5
+        return self.full_h_offset + _x_offset
 
     def get_y_point_coords(self, y_index: int) -> Number:
         """Get coordinates of point on y-axis by Y index."""
-        return self.full_v_offset + self.height - self.cell_height * y_index
+        _y_offset = self.cell_height * y_index
+        if len(self.y_major_ticks) == 1:
+            _y_offset = self.cell_height * 0.5
+        return self.full_v_offset + self.height - _y_offset
 
     def get_point_coords(self, x_index: int, y_index: int) -> Point:
         """Get coordinates of point by X and Y indices."""

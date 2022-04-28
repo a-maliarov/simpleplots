@@ -227,6 +227,8 @@ def find_min_timedelta(values: np.ndarray) -> dict:
 
 def smartrange(vmin: Number, vmax: Number, origin_values: np.ndarray) -> np.ndarray:
     """Fills gaps between vmin and vmax based on input type."""
+    if vmin == vmax:
+        return origin_values
 
     if isinstance(vmin, (float, int)) and isinstance(vmax, (float, int)):
 
