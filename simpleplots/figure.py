@@ -341,15 +341,15 @@ class Figure(object):
             radius=15,
             fill=self.theme.figure_background_color,
             outline=self.theme.grid_line_color,
-            width=self.theme.grid_line_width // 2
+            width=self.theme.grid_line_width
         )
 
         for i, axes in enumerate(self.axes):
             line_coords = (
                 bbox[0],
-                bbox[1] + letter_size[1] / 2 + letter_size[1] * i + spacing * i,
+                bbox[1] + letter_size[1] / 1.5 + letter_size[1] * i + spacing * i,
                 bbox[0] + letter_size[0] * 3,
-                bbox[1] + letter_size[1] / 2 + letter_size[1] * i + spacing * i
+                bbox[1] + letter_size[1] / 1.5 + letter_size[1] * i + spacing * i
             )
             self.draw.line(line_coords, width=axes.linewidth, fill=axes.color)
 
