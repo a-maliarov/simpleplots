@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from simpleplots import Figure
+from simpleplots.dates import (YearLocator, YearLocator, MonthLocator,
+                               WeekdayLocator, DayLocator, HourLocator,
+                               MinuteLocator, SecondLocator, DateFormatter)
 import platform
 import unittest
 import numpy as np
@@ -91,6 +94,15 @@ class TestFigure(unittest.TestCase):
         expected = [144.0, 75.6]
         self.assertListEqual(expected, to_test)
 
+    def test_single_point_plot(self):
+        fig = Figure(size=(500, 300))
+        fig.plot([1], [3], color='red', linewidth=7)
+        to_test = [fig.grid.cell_width, fig.grid.cell_height]
+        fig.close()
+
+        expected = [720.0, 378.0]
+        self.assertListEqual(expected, to_test)
+
     def test_plot_dates_without_gaps(self):
         dmin = np.datetime64('2022-01')
         dmax = np.datetime64('2022-05')
@@ -128,6 +140,123 @@ class TestFigure(unittest.TestCase):
         expected = [3.0, 11.8125]
         self.assertListEqual(expected, to_test)
 
+    def test_plot_dates_with_year_locator(self):
+        dmin = np.datetime64('2022')
+        dmax = np.datetime64('2030')
+        delta = np.timedelta64(1, 'Y')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        locator = YearLocator()
+        fig.set_major_locator(locator, axis='x')
+
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [round(fig.grid.cell_width, 2), fig.grid.cell_height]
+        fig.close()
+
+        expected = [0.28, 54.0]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_with_month_locator(self):
+        dmin = np.datetime64('2022-01')
+        dmax = np.datetime64('2022-12')
+        delta = np.timedelta64(1, 'M')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        locator = MonthLocator()
+        fig.set_major_locator(locator, axis='x')
+
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [round(fig.grid.cell_width, 2), fig.grid.cell_height]
+        fig.close()
+
+        expected = [2.37, 37.8]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_with_day_locator(self):
+        dmin = np.datetime64('2022-01-01')
+        dmax = np.datetime64('2022-01-25')
+        delta = np.timedelta64(1, 'D')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        locator = DayLocator()
+        fig.set_major_locator(locator, axis='x')
+
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [round(fig.grid.cell_width, 2), fig.grid.cell_height]
+        fig.close()
+
+        expected = [1.3, 15.75]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_with_hour_locator(self):
+        dmin = np.datetime64('2022-01-01 01')
+        dmax = np.datetime64('2022-01-01 15')
+        delta = np.timedelta64(1, 'h')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        locator = HourLocator()
+        fig.set_major_locator(locator, axis='x')
+
+        formatter = DateFormatter('%H:%M:%S', rotation=45)
+        fig.set_major_formatter(formatter, axis='x')
+
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [round(fig.grid.cell_width, 2), fig.grid.cell_height]
+        fig.close()
+
+        expected = [0.92, 27.0]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_with_minute_locator(self):
+        dmin = np.datetime64('2022-01-01 01:01')
+        dmax = np.datetime64('2022-01-01 01:10')
+        delta = np.timedelta64(1, 'm')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        locator = MinuteLocator()
+        fig.set_major_locator(locator, axis='x')
+
+        formatter = DateFormatter('%H:%M:%S', rotation=45)
+        fig.set_major_formatter(formatter, axis='x')
+
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [round(fig.grid.cell_width, 2), fig.grid.cell_height]
+        fig.close()
+
+        expected = [1.5, 47.25]
+        self.assertListEqual(expected, to_test)
+
+    def test_plot_dates_with_second_locator(self):
+        dmin = np.datetime64('2022-01-01 01:01:01')
+        dmax = np.datetime64('2022-01-01 01:01:17')
+        delta = np.timedelta64(1, 's')
+        times = np.arange(dmin, dmax, delta)
+        y = list(range(len(times)))
+
+        fig = Figure(size=(500, 300))
+        locator = SecondLocator()
+        fig.set_major_locator(locator, axis='x')
+
+        formatter = DateFormatter('%H:%M:%S', rotation=45)
+        fig.set_major_formatter(formatter, axis='x')
+
+        fig.plot(times, y, color='red', linewidth=7)
+        to_test = [round(fig.grid.cell_width, 2), fig.grid.cell_height]
+        fig.close()
+
+        expected = [48.0, 23.625]
+        self.assertListEqual(expected, to_test)
+
     def test_save(self):
         fig = Figure(size=(500, 300))
         fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
@@ -144,6 +273,7 @@ class TestFigure(unittest.TestCase):
         try:
             fig = Figure(size=(500, 300))
             fig.plot([1, 2, 3], [1, 2, 3], color='red', linewidth=7)
+            fig.legend()
             fig.show()
         except:
             pass
