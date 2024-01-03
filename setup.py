@@ -33,7 +33,7 @@ classifiers = [
 ]
 
 requires = [
-    "pillow >= 9.0.1,< 9.2.0",
+    "pillow >= 9.0.1,< 10.3.0",
     "numpy >= 1.21.5",
     "python-dateutil >= 2.8.2"
 ]
